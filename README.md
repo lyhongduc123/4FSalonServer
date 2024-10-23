@@ -2,7 +2,7 @@
 
 ## Group: 4Fingers - INT3306 8
 
-This is the server a for web-based application for managing appointments at a hair salon, where customers can book services and salon managers can manage the appointments.
+This is the server for a web-based application for managing appointments at a hair salon, where customers can book services and salon managers can manage the appointments.
 
 ## Project Overview
 
@@ -167,5 +167,5 @@ Feel free to submit a pull request or open an issue to suggest improvements or r
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the GPL-3.0 License.
 ```

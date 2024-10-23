@@ -3,6 +3,7 @@ import { User } from './entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDTO } from './dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -11,23 +12,31 @@ export class UsersService {
         private usersRepository: Repository<User>,
     ) {}
 
-    findAll(): Promise<User[]> {
+    async findAll(): Promise<User[]> {
         return this.usersRepository.find();
     }
 
-    findOne(id: number): Promise<User> {
-        return this.usersRepository.findOneBy({
-            id: id
-        });
+    async findOne(id: number): Promise<User>;
+    async findOne(email: string): Promise<User>;
+    async findOne(google_id: string): Promise<User>;
+    async findOne(identifier: number | string): Promise<User> {
+        if (typeof identifier === 'number') {
+            return this.usersRepository.findOneBy({ id: identifier });
+        } else if (typeof identifier === 'string' && identifier.includes('@')) {
+            return this.usersRepository.findOneBy({ email: identifier });
+        } else {
+            return this.usersRepository.findOneBy({ google_id: identifier });
+        }
     }
 
     async create(user: CreateUserDTO): Promise<User> {
-        const newUser = new User();
-        newUser.email = user.email;
-        newUser.password = user.password;
-        newUser.google_id = user.google_id;
-        newUser.role = user.role;
-        return this.usersRepository.save(newUser);
+        if (user.password !== undefined && user.password !== null && user.password !== '') {
+            const salt = await bcrypt.genSalt()
+            user.password = await bcrypt.hash(user.password, salt);
+        }
+        const newUser = await this.usersRepository.save(user);
+        delete newUser.password;
+        return newUser;
     }
 
     async update(): Promise<any> {
@@ -38,11 +47,7 @@ export class UsersService {
         return {};
     }
 
-    async login(): Promise<any> {
-        return {};
-    }
-
-    async logout(): Promise<any> {
-        return {};
+    async comparePassword(password: string, hash: string): Promise<boolean> {
+        return bcrypt.compare(password, hash);
     }
 }
