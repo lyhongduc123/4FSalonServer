@@ -14,5 +14,5 @@ export class CreateUserDTO {
     google_id: string;
 
     @IsString()
-    role: string;
+    role?: string;
 }

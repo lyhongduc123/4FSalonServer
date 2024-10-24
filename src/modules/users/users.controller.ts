@@ -7,7 +7,8 @@ import {
     HttpStatus,
     Post,
     Body,
-    UseGuards
+    UseGuards,
+    Delete
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from './dto';
@@ -39,5 +40,17 @@ export class UsersController {
     @UseGuards(JwtAuthGuard)
     async create(@Body() createUserDto: CreateUserDTO): Promise<any> {
         return await this.usersService.create(createUserDto);
+    }
+
+    @Delete(':id')
+    @UseGuards(JwtAuthGuard)
+    async remove(
+        @Param(
+            'id',
+            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+        )
+        id: number
+    ): Promise<any> {
+        return await this.usersService.remove(id);
     }
 }

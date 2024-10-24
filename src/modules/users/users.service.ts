@@ -34,17 +34,26 @@ export class UsersService {
             const salt = await bcrypt.genSalt()
             user.password = await bcrypt.hash(user.password, salt);
         }
+        if (!user.role) {
+            user.role = 'customer';
+        }
         const newUser = await this.usersRepository.save(user);
         delete newUser.password;
         return newUser;
     }
 
-    async update(): Promise<any> {
-        return {};
+    async update(user: CreateUserDTO): Promise<User> {
+        const updatedUser = await this.usersRepository.save(user);
+        console.log(updatedUser);
+        delete updatedUser.password;
+        return updatedUser;
     }
 
-    async remove(): Promise<any> {
-        return {};
+    async remove(id: number): Promise<any> {
+        await this.usersRepository.delete(
+            { id: id }
+        );
+        return 'User deleted';
     }
 
     async comparePassword(password: string, hash: string): Promise<boolean> {

@@ -5,8 +5,10 @@ import {
     PrimaryGeneratedColumn,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToMany,
+    OneToOne,
 } from 'typeorm';
+import { Customer } from '../../customers/entity';
+import { Employee } from 'src/modules/employees/entity';
 
 @Entity('users')
 export class User {
@@ -31,13 +33,19 @@ export class User {
 
     @Column({
         nullable: false,
-        default: 'customer',
+        default: 'customer'
     })
-    role: string = 'customer';
+    role: string;
 
     @CreateDateColumn()
     created_at: Date;
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @OneToOne(() => Customer, (customer) => customer.user)
+    customer: Customer;
+
+    @OneToOne(() => Employee, (employee) => employee.user)
+    employee: Employee;
 }
