@@ -2,11 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { User } from './entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CreateUserDTO } from './dto';
+import { CreateUserDTO, UpdateUserDTO } from './dto';
+import { IEntity } from './../../interfaces';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class UsersService {
+export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO> {
     constructor(
         @InjectRepository(User)
         private usersRepository: Repository<User>,
@@ -29,10 +30,13 @@ export class UsersService {
         }
     }
 
+    async findBy(where: any): Promise<User[]> {
+        return this.usersRepository.find({ where });
+    }
+
     async create(user: CreateUserDTO): Promise<User> {
         if (user.password !== undefined && user.password !== null && user.password !== '') {
-            const salt = await bcrypt.genSalt()
-            user.password = await bcrypt.hash(user.password, salt);
+            user.password = await this.hashPassword(user.password);
         }
         if (!user.role) {
             user.role = 'customer';
@@ -42,7 +46,13 @@ export class UsersService {
         return newUser;
     }
 
-    async update(user: CreateUserDTO): Promise<User> {
+    async update(user: UpdateUserDTO): Promise<User> {
+        if (user.password !== undefined && user.password !== null && user.password !== '') {
+            user.password = await this.hashPassword(user.password);
+        }
+        if (!user.role) {
+            user.role = 'customer';
+        }
         const updatedUser = await this.usersRepository.save(user);
         console.log(updatedUser);
         delete updatedUser.password;
@@ -50,7 +60,7 @@ export class UsersService {
     }
 
     async remove(id: number): Promise<any> {
-        await this.usersRepository.delete(
+        await this.usersRepository.softDelete(
             { id: id }
         );
         return 'User deleted';
@@ -58,5 +68,10 @@ export class UsersService {
 
     async comparePassword(password: string, hash: string): Promise<boolean> {
         return bcrypt.compare(password, hash);
+    }
+
+    async hashPassword(password: string): Promise<string> {
+        const salt = await bcrypt.genSalt()
+        return bcrypt.hash(password, salt);
     }
 }

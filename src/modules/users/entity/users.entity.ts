@@ -6,9 +6,11 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     OneToOne,
+    DeleteDateColumn,
 } from 'typeorm';
 import { Customer } from '../../customers/entity';
 import { Employee } from 'src/modules/employees/entity';
+
 
 @Entity('users')
 export class User {
@@ -42,6 +44,14 @@ export class User {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @DeleteDateColumn()
+    deleted_at: Date;
+
+    @Column({
+        nullable: true,
+    })
+    picture_url: string;
 
     @OneToOne(() => Customer, (customer) => customer.user)
     customer: Customer;

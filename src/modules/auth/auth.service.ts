@@ -1,9 +1,10 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { CreateUserDTO } from '../users/dto';
 import { LoginDTO } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
+import { ChangePasswordDto } from './dto';
 
 @Injectable()
 export class AuthService {
@@ -49,6 +50,7 @@ export class AuthService {
         return this.generateJwt({
             sub: userExists.id,
             email: userExists.email,
+            role: userExists.role,
         });
     }
 
@@ -60,6 +62,7 @@ export class AuthService {
         return this.generateJwt({
             sub: user.id,
             email: user.email,
+            role: user.role,
         });
     }
 
@@ -69,6 +72,7 @@ export class AuthService {
             return this.generateJwt({
                 sub: newUser.id,
                 email: newUser.email,
+                user: newUser.role,
             });
         } catch (error) {
             throw new BadRequestException(error.message);
@@ -81,11 +85,10 @@ export class AuthService {
             return this.generateJwt({
                 sub: newUser.id,
                 email: newUser.email,
+                user: newUser.role,
             });
         } catch (error) {
-            if (error.code === '23505') {
-                throw new BadRequestException('Email already exists');
-            }
+            throw new BadRequestException('Email already exists');
         }
     }
 
@@ -100,5 +103,33 @@ export class AuthService {
             message: 'User information from google',
             user: req.user
         }
+    }
+
+    async changePassword(changePasswordDto: ChangePasswordDto) {
+        const { oldPassword, newPassword } = changePasswordDto;
+         
+        const user = await this.usersService.findOne(changePasswordDto.email);
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+    
+        const isPasswordValid = await this.usersService.comparePassword(oldPassword, user.password);
+        if (!isPasswordValid) {
+            throw new UnauthorizedException('Invalid password');
+        }
+
+        user.password = newPassword;
+        await this.usersService.update(user);
+        return { message: 'Password changed successfully' };
+    }
+
+    async forgotPassword(email: string) {
+        const user = await this.usersService.findOne(email)
+        
+        if (user) {
+            
+        }
+
+        return { message: 'Password reset email sent.' };
     }
 }

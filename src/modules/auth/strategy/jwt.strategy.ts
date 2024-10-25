@@ -8,6 +8,7 @@ import { config } from 'dotenv';
 export type JwtPayload = {
     sub: string;
     email: string;
+    role: string;
 };
 
 config();
@@ -23,6 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
             if (req && req.cookies) {
                 token = req.cookies['access_token'];
             }
+
             return token || ExtractJwt.fromAuthHeaderAsBearerToken()(req);
         }
 
@@ -34,13 +36,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: JwtPayload) {
-        const user = await this.usersService.findOne(payload.sub);
-
-        if (!user) throw new UnauthorizedException('Login to continue');
-
         return {
             id: payload.sub,
             email: payload.email,
+            role: payload.role
         }
     }
 }

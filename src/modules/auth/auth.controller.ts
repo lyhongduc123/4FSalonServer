@@ -12,10 +12,15 @@ import {
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { GoogleOauthGuard } from './../../common';
+import { JwtAuthGuard } from './../../common';
+import { Roles } from './../../common/decorators';
+import { RolesGuard } from './../../common/guards';
 import { CreateUserDTO } from '../users/dto';
-import { LoginDTO } from './dto/login.dto';
-import { ApiBody } from '@nestjs/swagger';
+import { LoginDTO, ChangePasswordDto, ForgotPasswordDto } from './dto';
+import { ApiBody, ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
@@ -68,5 +73,22 @@ export class AuthController {
         return this.authService.login(user);
     }
 
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('customer')
+    @Roles('admin')
+    @Post('change-password')
+    async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+        return this.authService.changePassword(changePasswordDto);
+    }
 
+    /**
+     * 
+     * @param req 
+     * @param forgotPasswordDto 
+     * @returns 
+     */
+    @Post('forgot-password')
+    async forgotPassword(@Req() req: Request, @Body() forgotPasswordDto: ForgotPasswordDto) {
+        return this.authService.forgotPassword(forgotPasswordDto.email);
+    }
 }

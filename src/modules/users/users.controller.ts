@@ -8,24 +8,32 @@ import {
     Post,
     Body,
     UseGuards,
-    Delete
+    Delete,
+    Put
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDTO } from './dto';
+import { CreateUserDTO, UpdateUserDTO } from './dto';
 import { JwtAuthGuard } from './../../common';
+import { Roles } from 'src/common/decorators';
+import { RolesGuard } from './../../common';
+import { ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('Users')
 @Controller('api/users')
 export class UsersController {
     constructor(private usersService: UsersService) {}
 
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('admin')
     @Get()
-    @UseGuards(JwtAuthGuard)
-    async findAll(@Req() req: Request): Promise<any[]> {
+    async findAll(): Promise<any[]> {
         return await this.usersService.findAll();
     }
 
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('customer')
     @Get(':id')
-    @UseGuards(JwtAuthGuard)
     async findOne(
         @Param(
             'id',
@@ -36,14 +44,29 @@ export class UsersController {
         return await this.usersService.findOne(id);
     }
 
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('admin')
+    @Get('find')
+    async findBy(where: any): Promise<any[]> {
+        return await this.usersService.findBy(where);
+    }
+    
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('admin')
     @Post('create')
-    @UseGuards(JwtAuthGuard)
     async create(@Body() createUserDto: CreateUserDTO): Promise<any> {
         return await this.usersService.create(createUserDto);
     }
 
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Put('update')
+    async update(user: UpdateUserDTO): Promise<any> {
+        return await this.usersService.update(user);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('admin')
     @Delete(':id')
-    @UseGuards(JwtAuthGuard)
     async remove(
         @Param(
             'id',
