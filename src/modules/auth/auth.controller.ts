@@ -18,6 +18,7 @@ import { RolesGuard } from './../../common/guards';
 import { CreateUserDTO } from '../users/dto';
 import { LoginDTO, ChangePasswordDto, ForgotPasswordDto } from './dto';
 import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { CustomerUserDTO } from '../users/dto/customer-user.dto';
 
 
 @ApiTags('Auth')
@@ -50,8 +51,23 @@ export class AuthController {
     }
 
     @Post('register')
-    async register(@Body() createUserDTO: CreateUserDTO): Promise<any> {
-        return this.authService.register(createUserDTO);
+    @ApiBody({
+        schema: {
+            type: 'object',
+            properties: {
+                email: {
+                    type: 'string',
+                    example: 'exmaple@gmail.com',
+                },
+                password: {
+                    type: 'string',
+                    example: 'password',
+                }
+            }
+        }
+    })
+    async register(@Body() customerUserDTO: CustomerUserDTO): Promise<any> {
+        return this.authService.register(customerUserDTO);
     }
 
     @ApiBody({

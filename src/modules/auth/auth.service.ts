@@ -5,6 +5,8 @@ import { CreateUserDTO } from '../users/dto';
 import { LoginDTO } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordDto } from './dto';
+import { CreateCustomerDTO } from '../customers/dto/customer.dto';
+import { CustomersService } from '../customers/customers.service';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +14,7 @@ export class AuthService {
         private jwtService: JwtService,
         @Inject(UsersService)
         private readonly usersService: UsersService,
+        private readonly customersService: CustomersService
     ) {}
 
     async validateUser(email: string, password: string): Promise<any> {
@@ -79,16 +82,35 @@ export class AuthService {
         }
     }
 
-    async register(user: CreateUserDTO) {
+    async register(user: any) {
+        const userExists = await this.usersService.findOne(user.email);
+        if (userExists) {
+            throw new BadRequestException('User already exists');
+        }
+        
         try {
-            const newUser = await this.usersService.create(user);
+            const userDTO: CreateUserDTO = {
+                email: user.email,
+                password: user.password,
+                google_id: user.google_id,
+            };
+            const newUser = await this.usersService.create(userDTO);
+
+            const customerDTO: CreateCustomerDTO = {
+                email: user.email,
+                name: user.name,
+                phone: user.phone,
+                user_id: (await this.usersService.findOne(user.email)).id,
+            };
+            await this.customersService.create(customerDTO);
             return this.generateJwt({
                 sub: newUser.id,
                 email: newUser.email,
                 user: newUser.role,
             });
         } catch (error) {
-            throw new BadRequestException('Email already exists');
+            this.usersService.delete(user.id);
+            throw new BadRequestException('Error creating user');
         }
     }
 
