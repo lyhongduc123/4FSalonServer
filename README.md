@@ -88,14 +88,19 @@ npm install
 3. Create a `.env` file in the `backend` folder with the following content:
 
 ```bash
-DATABASE_HOST=localhost
-DATABASE_PORT=3306
-DATABASE_USER=root
-DATABASE_PASSWORD=<your_db_password>
-DATABASE_NAME=hair_salon
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=<your_db_password>
+DB_NAME=hair_salon
+DB_DIALECT=mysql
+DB_SYNCHRONIZE=`true` or `false`
 
 GOOGLE_CLIENT_ID=<your_google_client_id>
 GOOGLE_CLIENT_SECRET=<your_google_client_secret>
+
+JWT_SECRET=<your_jwt_secret>
+JWT_EXPIRES_IN=<expire_duration>
 ```
 
 4. Run database migrations (if applicable):
