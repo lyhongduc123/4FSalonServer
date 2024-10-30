@@ -45,7 +45,7 @@ export class BranchesController {
         summary: 'Create a branch',
         description: 'Create a branch in the database'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async create(@Body() branch: CreateBranchDTO): Promise<any> {
         return await this.branchesService.create(branch);
     }
@@ -57,7 +57,7 @@ export class BranchesController {
         summary: 'Update a branch',
         description: 'Update a branch in the database'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async update(@Body() branch: UpdateBranchDTO): Promise<any> {
         return await this.branchesService.update(branch);
     }
@@ -69,7 +69,7 @@ export class BranchesController {
         summary: 'Delete a branch',
         description: 'Delete a branch from the database'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async remove(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
         return await this.branchesService.remove(id);
     }

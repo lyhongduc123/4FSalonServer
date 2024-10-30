@@ -45,7 +45,7 @@ export class ServicesController {
         summary: 'Create service',
         description: 'Create a service in the database'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async create(@Body() createServiceDTO: CreateServiceDTO): Promise<any> {
         return await this.servicesService.create(createServiceDTO);
     }
@@ -57,7 +57,7 @@ export class ServicesController {
         summary: 'Update service',
         description: 'Update a service in the database'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async update(@Body() updateServiceDTO: UpdateServiceDTO): Promise<any> {
         return await this.servicesService.update(updateServiceDTO);
     }
@@ -69,7 +69,7 @@ export class ServicesController {
         summary: 'Delete service',
         description: 'Delete a service in the database'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async remove(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
         return await this.servicesService.remove(id);
     }

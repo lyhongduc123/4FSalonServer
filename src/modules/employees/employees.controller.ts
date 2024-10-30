@@ -52,7 +52,7 @@ export class EmployeesController {
         summary: 'Create employee',
         description: 'Create employee'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async create(@Body() employee: CreateEmployeeUserDTO): Promise<any> {
         if (employee.password) {
             const user: CreateUserDTO = {
@@ -77,7 +77,7 @@ export class EmployeesController {
         summary: 'Update employee',
         description: 'Update employee by id'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async update(@Body() employee: UpdateEmployeeDTO): Promise<any> {
         return await this.employeesService.update(employee);
     }
@@ -89,7 +89,7 @@ export class EmployeesController {
         summary: 'Delete employee',
         description: 'Delete employee by id'
     })
-    @ApiBearerAuth('Admin token')
+    @ApiBearerAuth('JWT-auth')
     async remove(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
         return await this.employeesService.remove(id);
     }

@@ -24,6 +24,7 @@ import { User } from './entity';
 @ApiTags('Users')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
+@ApiBearerAuth('JWT-auth')
 @Controller('api/users')
 export class UsersController {
     constructor(private usersService: UsersService) {}
@@ -33,7 +34,6 @@ export class UsersController {
         summary: 'Get all users', 
         description: 'Get all users from the database'
     })
-    @ApiBearerAuth('Admin token')
     async findAll(): Promise<any[]> {
         return await this.usersService.findAll();
     }
@@ -43,7 +43,6 @@ export class UsersController {
         summary: 'Get user by id', 
         description: 'Get a user by id from the database'
     })
-    @ApiBearerAuth('Admin token')
     async findOne(
         @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
@@ -55,7 +54,6 @@ export class UsersController {
         summary: 'Get list of users by search', 
         description: 'Get a list of users by search from the database'
     })
-    @ApiBearerAuth('Admin token')
     async findBy(@Body() where: UserDTO): Promise<any[]> {
         return await this.usersService.findBy(where);
     }
@@ -65,7 +63,6 @@ export class UsersController {
         summary: 'Create a user', 
         description: 'Create a user in the database'
     })
-    @ApiBearerAuth('Admin token')
     async create(@Body() createUserDto: CreateUserDTO): Promise<any> {
         return await this.usersService.create(createUserDto);
     }
@@ -75,7 +72,6 @@ export class UsersController {
         summary: 'Update a user', 
         description: 'Update a user in the database'
     })
-    @ApiBearerAuth('Admin token')
     async update(@Body() user: UpdateUserDTO): Promise<any> {
         return await this.usersService.update(user);
     }
@@ -85,7 +81,6 @@ export class UsersController {
         summary: 'Delete a user', 
         description: 'Delete a user in the database'
     })
-    @ApiBearerAuth('Admin token')
     async remove(
         @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
