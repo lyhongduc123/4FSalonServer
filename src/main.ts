@@ -13,7 +13,9 @@ async function bootstrap() {
   });
 
 
-  const config = new DocumentBuilder(  )
+  const config = new DocumentBuilder()
+  .addBearerAuth()
+  .addOAuth2()
   .setTitle('4F API')
   .setDescription('API documentaion')
   .setVersion('1.1')

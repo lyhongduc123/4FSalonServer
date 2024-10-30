@@ -17,7 +17,7 @@ import { Roles } from './../../common/decorators';
 import { RolesGuard } from './../../common/guards';
 import { CreateUserDTO, CustomerUserDTO } from '../users/dto';
 import { LoginDTO, ChangePasswordDTO, ForgotPasswordDTO } from './dto';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiHeader, ApiHeaders, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiHeader, ApiHeaders, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 
 @ApiTags('Auth')
@@ -27,6 +27,10 @@ export class AuthController {
 
     @Get('google')
     @UseGuards(GoogleOauthGuard)
+    @ApiOperation({
+        summary: 'Google Auth',
+        description: 'Google authentication'
+    })
     async googleAuth(@Req() req: Request): Promise<any> {
         return this.authService.googleAuth(req);
     }
@@ -44,12 +48,16 @@ export class AuthController {
         })
 
         return {
-            url: 'http://localhost:3000',
+            url: 'http://localhost:8080',
             statusCode: HttpStatus.OK,
         };
     }
 
     @Post('register')
+    @ApiOperation({
+        summary: 'Register',
+        description: 'Register a new user * can only be customer *'
+    })
     @ApiBadRequestResponse({ description: 'User already exists'})
     @ApiInternalServerErrorResponse({ description: 'Error creating user'})
     async register(@Body() customerUserDTO: CustomerUserDTO): Promise<any> {
@@ -57,6 +65,10 @@ export class AuthController {
     }
 
     @Post('login')
+    @ApiOperation({ 
+        summary: 'Login', 
+        description: 'Login with email and password' 
+    })
     async login(@Body() user: LoginDTO): Promise<any> {
         return this.authService.login(user);
     }
@@ -65,6 +77,10 @@ export class AuthController {
     @Roles('customer')
     @Roles('admin')
     @Post('change-password')
+    @ApiOperation({ 
+        summary: 'Change password', 
+        description: 'Change password of user' 
+    })
     @ApiNotFoundResponse({ description: 'User not found' })
     @ApiUnauthorizedResponse({ description: 'Invalid password' })
     @ApiResponse({ status: 200, description: 'Password changed successfully' })
@@ -78,7 +94,12 @@ export class AuthController {
     }
 
     @Post('login-admin')
-    @ApiUnauthorizedResponse({ description: 'Invalid password' }) 
+    @ApiOperation({ 
+        summary: 'Login as admin', 
+        description: 'Login as admin, if not admin, will return unauthorized' 
+    })
+    @ApiBadRequestResponse({ description: 'Invalid credentials' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized' }) 
     async loginAdmin(@Body() user: LoginDTO): Promise<any> {
         return await this.authService.loginAdmin(user);
     }

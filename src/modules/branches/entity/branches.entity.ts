@@ -1,4 +1,4 @@
-import { Employee } from "src/modules/employees/entity/employees.entity";
+import { Employee } from "./../../employees/entity";
 import { 
     Column, 
     PrimaryGeneratedColumn,

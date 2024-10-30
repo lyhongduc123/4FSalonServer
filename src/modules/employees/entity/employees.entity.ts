@@ -2,7 +2,7 @@ import { Delete } from "@nestjs/common";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Branch } from "../../branches/entity";
 import { User } from "../../users/entity";
-import { Appointment } from "src/modules/appointments/entity";
+import { Appointment } from "../../appointments/entity";
 
 @Entity('employees')
 export class Employee {

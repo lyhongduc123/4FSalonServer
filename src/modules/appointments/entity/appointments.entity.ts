@@ -1,6 +1,7 @@
-import { Customer } from "src/modules/customers/entity";
-import { Employee } from "src/modules/employees/entity/employees.entity";
-import { Service } from "src/modules/services/entity";
+import { ApiProperty } from "@nestjs/swagger";
+import { Customer } from "./../../customers/entity";
+import { Employee } from "./../../employees/entity";
+import { Service } from "./../../services/entity";
 import { 
     Column,
     CreateDateColumn,
