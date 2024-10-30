@@ -9,7 +9,7 @@ import {
     DeleteDateColumn,
 } from 'typeorm';
 import { Customer } from '../../customers/entity';
-import { Employee } from 'src/modules/employees/entity';
+import { Employee } from '../../employees/entity';
 
 
 @Entity('users')

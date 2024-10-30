@@ -1,26 +1,37 @@
-import { PartialType } from '@nestjs/swagger';
+import { ApiProperty, PartialType } from '@nestjs/swagger';
 import {
     IsString,
     IsNumber,
-    IsNotEmpty
+    IsNotEmpty,
+    IsOptional
 } from 'class-validator'
 
 export class CreateServiceDTO {
+    @ApiProperty({ example: 'Cat toc' })
     @IsString()
     @IsNotEmpty()
     title: string;
 
+    @ApiProperty({ example: 'Cat toc gia re voi cac stylist co trinh do chuyen nghiep' })
     @IsString()
     @IsNotEmpty()
     description: string;
 
+    @ApiProperty({ example: 30 })
     @IsNumber()
     @IsNotEmpty()
     estimate_time: number;
 
+    @ApiProperty({ example: 100000 })
     @IsNumber()
     @IsNotEmpty()
     price: number;
 }
 
-export class UpdateServiceDTO extends PartialType(CreateServiceDTO) {}
+export class UpdateServiceDTO extends PartialType(CreateServiceDTO) {
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    @IsNotEmpty()
+    @IsOptional()
+    id: number;
+}

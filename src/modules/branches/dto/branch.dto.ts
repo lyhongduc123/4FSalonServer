@@ -5,25 +5,25 @@ import {
      IsBoolean} from 'class-validator';
 
 export class CreateBranchDTO {
-    @ApiProperty()
+    @ApiProperty({ example: 'So 10 Le Van Luong' })
     @IsString()
     name: string;
 
-    @ApiProperty()
+    @ApiProperty({ example: '10 Le Van Luong, Thanh Xuan, Ha Noi' })
     @IsString()
     @IsNotEmpty()
     address: string;
 
-    @ApiProperty()
+    @ApiProperty({ example: '0912487918' })
     @IsString()
     phone: string;
 
-    @ApiProperty()
+    @ApiProperty({ example: 'brancha@mail.com' })
     @IsString()
     @IsNotEmpty()
     email: string;
 
-    @ApiProperty()
+    @ApiProperty({ example: 'pending' })
     @IsBoolean()
     @IsNotEmpty()
     status: boolean;

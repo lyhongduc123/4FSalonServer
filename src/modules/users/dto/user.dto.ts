@@ -26,6 +26,13 @@ export class CreateUserDTO {
 
 export class UpdateUserDTO extends PartialType(CreateUserDTO) {}
 
+export class UserDTO extends PartialType(CreateUserDTO) {
+    @ApiProperty({ example: '1'})
+    @IsNumber()
+    @IsOptional()
+    id?: number;
+}
+
 export class CustomerUserDTO extends CreateUserDTO {
     @ApiProperty({ example: 'trieutulong'})
     @IsString()
