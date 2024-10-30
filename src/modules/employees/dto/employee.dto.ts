@@ -34,6 +34,27 @@ export class CreateEmployeeDTO {
     @IsNumber()
     @IsNotEmpty()
     branch_id: number;
+
+    @ApiProperty()
+    @IsNumber()
+    user_id?: number;
 }
 
-export class UpdateEmployeeDTO extends PartialType(CreateEmployeeDTO) {}
+export class UpdateEmployeeDTO extends PartialType(CreateEmployeeDTO) {
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    id: number;
+}
+
+export class CreateEmployeeUserDTO extends CreateEmployeeDTO {
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    password: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    role: string;
+}

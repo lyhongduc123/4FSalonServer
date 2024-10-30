@@ -1,10 +1,10 @@
-import { BadRequestException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { CreateUserDTO } from '../users/dto';
 import { LoginDTO } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
-import { ChangePasswordDto } from './dto';
+import { ChangePasswordDTO } from './dto';
 import { CreateCustomerDTO } from '../customers/dto/customer.dto';
 import { CustomersService } from '../customers/customers.service';
 
@@ -85,7 +85,7 @@ export class AuthService {
     async register(user: any) {
         const userExists = await this.usersService.findOne(user.email);
         if (userExists) {
-            throw new BadRequestException('User already exists');
+            return new BadRequestException('User already exists');
         }
         
         try {
@@ -110,7 +110,7 @@ export class AuthService {
             });
         } catch (error) {
             this.usersService.delete(user.id);
-            throw new BadRequestException('Error creating user');
+            return new InternalServerErrorException('Error creating user');
         }
     }
 
@@ -127,7 +127,7 @@ export class AuthService {
         }
     }
 
-    async changePassword(changePasswordDto: ChangePasswordDto) {
+    async changePassword(changePasswordDto: ChangePasswordDTO) {
         const { oldPassword, newPassword } = changePasswordDto;
          
         const user = await this.usersService.findOne(changePasswordDto.email);
@@ -149,7 +149,12 @@ export class AuthService {
         const user = await this.usersService.findOne(email)
         
         if (user) {
-            
+            this.generateJwt({
+                sub: user.id,
+                email: user.email,
+                role: user.role,
+            });
+            await this.usersService.update(user);
         }
 
         return { message: 'Password reset email sent.' };

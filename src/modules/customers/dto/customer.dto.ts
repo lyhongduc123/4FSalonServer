@@ -19,4 +19,8 @@ export class CreateCustomerDTO {
     user_id: number;
 }
 
-export class UpdateCustomerDTO extends PartialType(CreateCustomerDTO) {}
+export class UpdateCustomerDTO extends PartialType(CreateCustomerDTO) {
+    @IsNumber()
+    @IsNotEmpty()
+    id: number;
+}

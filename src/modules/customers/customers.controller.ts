@@ -20,17 +20,17 @@ export class CustomersController {
         return await this.customersService.findOne(id);
     }
 
-    @Get('find')
+    @Get('search')
     async findBy(where: any): Promise<any[]> {
         return await this.customersService.findBy(where);
     }
 
-    @Post('create')
+    @Post()
     async create(customer: CreateCustomerDTO): Promise<any> {
         return await this.customersService.create(customer);
     }
 
-    @Put('update')
+    @Put(':id')
     async update(customer: UpdateCustomerDTO): Promise<any> {
         return await this.customersService.update(customer);
     }
