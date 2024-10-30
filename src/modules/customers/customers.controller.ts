@@ -7,6 +7,7 @@ import { Admin } from 'typeorm';
 
 @ApiTags('Customers')
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth('JWT-auth')
 @Controller('api/customers')
 export class CustomersController {
     constructor(private customersService: CustomersService) {}
@@ -17,7 +18,6 @@ export class CustomersController {
         summary: 'Get all customers', 
         description: 'Get all customers from the database * Requires Admin Role *'
     })
-    @ApiBearerAuth('Admin token')
     async findAll(): Promise<any[]> {
         return await this.customersService.findAll();
     }
@@ -27,7 +27,6 @@ export class CustomersController {
         summary: 'Get a customer',
         description: 'Get a customer from the database'
     })
-    @ApiBearerAuth('Admin token')
     async findOne(
         @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
@@ -40,7 +39,6 @@ export class CustomersController {
         summary: 'Search customers',
         description: 'Search customers in the database * Requires Admin Role *'
     })
-    @ApiBearerAuth('Admin token')
     async findBy(@Body() where: any): Promise<any[]> {
         return await this.customersService.findBy(where);
     }
@@ -51,7 +49,6 @@ export class CustomersController {
         summary: 'Create a customer',
         description: 'Create a customer in the database'
     })
-    @ApiBearerAuth('Admin token')
     async create(@Body() customer: CreateCustomerDTO): Promise<any> {
         return await this.customersService.create(customer);
     }
@@ -62,7 +59,6 @@ export class CustomersController {
         summary: 'Update a customer',
         description: 'Update a customer in the database * Requires Admin Role *'
     })
-    @ApiBearerAuth('Admin token')
     async update(@Body() customer: UpdateCustomerDTO): Promise<any> {
         return await this.customersService.update(customer);
     }
@@ -73,7 +69,6 @@ export class CustomersController {
         summary: 'Delete a customer',
         description: 'Delete a customer from the database * Requires Admin Role *'
     })
-    @ApiBearerAuth('Admin token')
     async remove(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
         return await this.customersService.remove(id);
     }

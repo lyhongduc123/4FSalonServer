@@ -10,6 +10,7 @@ import { Appointment } from './entity';
 @ApiTags('Appointments')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin')
+@ApiBearerAuth('JWT-auth')
 @Controller('api/appointments')
 export class AppointmentsController {
     constructor(
@@ -23,7 +24,6 @@ export class AppointmentsController {
         summary: 'Get all appointments',
         description: 'Get all appointments from the database * Requires Admin Role *'
     })
-    @ApiBearerAuth('Admin token')
     async findAll(): Promise<any[]> {
         return await this.appointmentsService.findAll();
     }
@@ -33,7 +33,6 @@ export class AppointmentsController {
         summary: 'Get an appointment',
         description: 'Get an appointment from the database * Requires Admin Role *'
     })
-    @ApiBearerAuth('Admin token')
     async findOne(
         @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
@@ -46,7 +45,6 @@ export class AppointmentsController {
         summary: 'Search appointments',
         description: 'Search appointments in the database * Requires logged in *'
     })
-    @ApiBearerAuth('Token')
     @ApiBody({ type: Appointment })
     async findBy(@Body() where: any): Promise<any[]> {
         return await this.appointmentsService.findBy(where);
@@ -58,7 +56,6 @@ export class AppointmentsController {
         summary: 'Create an appointment',
         description: 'Create an appointment in the database * Requires logged in *'
     })
-    @ApiBearerAuth('Token')
     async create(@Body() appointment: CreateAppointmentDTO): Promise<any> {
         if (!appointment.user_id) {
             throw new BadRequestException('User id not provided');
@@ -88,7 +85,6 @@ export class AppointmentsController {
         summary: 'Update an appointment',
         description: 'Update an appointment in the database * Requires logged in *'
     })
-    @ApiBearerAuth('Token')
     async update(
         @Param('id', new ParseIntPipe()) id: number, 
         @Body() updateAppointmentDTO: UpdateAppointmentDTO
@@ -105,7 +101,6 @@ export class AppointmentsController {
         summary: 'Update an appointment status',
         description: 'Update an appointment status in the database * Requires Admin Role *'
     })
-    @ApiBearerAuth('Admin token')
     async patch(
         @Param('id', new ParseIntPipe()) id: number, 
         @Body() appointmentStatusDTO: AppointmentStatusDTO
@@ -122,7 +117,6 @@ export class AppointmentsController {
         summary: 'Delete an appointment',
         description: 'Delete an appointment from the database * Requires Admin Role *'
     })
-    @ApiBearerAuth('Admin token')
     async remove(
         @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
