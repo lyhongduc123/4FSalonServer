@@ -15,10 +15,12 @@ export class CreateUserDTO {
 
     @ApiProperty({ example: 'null'})
     @IsString()
+    @IsOptional()
     google_id?: string;
 
     @ApiProperty({ example: 'customer'})
     @IsString()
+    @IsOptional()
     role?: string;
 }
 

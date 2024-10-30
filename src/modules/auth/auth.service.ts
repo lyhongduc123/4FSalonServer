@@ -1,12 +1,13 @@
 import { BadRequestException, Inject, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
-import { CreateUserDTO } from '../users/dto';
+import { CreateUserDTO, CustomerUserDTO } from '../users/dto';
 import { LoginDTO } from './dto/login.dto';
 import * as bcrypt from 'bcrypt';
 import { ChangePasswordDTO } from './dto';
 import { CreateCustomerDTO } from '../customers/dto/customer.dto';
 import { CustomersService } from '../customers/customers.service';
+import { Roles } from 'src/common';
 
 @Injectable()
 export class AuthService {
@@ -82,36 +83,27 @@ export class AuthService {
         }
     }
 
-    async register(user: any) {
+    async register(user: CustomerUserDTO) {
         const userExists = await this.usersService.findOne(user.email);
         if (userExists) {
-            return new BadRequestException('User already exists');
+            throw new BadRequestException('User already exists');
         }
-        
+        let user_id = null
         try {
-            const userDTO: CreateUserDTO = {
-                email: user.email,
-                password: user.password,
-                google_id: user.google_id,
-                role: 'customer',
-            };
-            const newUser = await this.usersService.create(userDTO);
-
-            const customerDTO: CreateCustomerDTO = {
-                email: user.email,
-                name: user.name,
-                phone: user.phone,
-                user_id: (await this.usersService.findOne(user.email)).id,
-            };
-            await this.customersService.create(customerDTO);
-            return this.generateJwt({
+            const userDTO: CreateUserDTO = {...user, role: 'customer'}
+            const newUser = await this.usersService.create(userDTO)
+            user_id = newUser.id
+            const customerDTO: CreateCustomerDTO = {...user, user_id: newUser.id}
+            const newCustomer = await this.customersService.create(customerDTO);
+            newCustomer.user = newUser;
+            return this.generateJwt ({
                 sub: newUser.id,
                 email: newUser.email,
-                user: newUser.role,
-            });
+                role: newUser.role
+            })
         } catch (error) {
-            this.usersService.delete(user.id);
-            return new InternalServerErrorException('Error creating user');
+            if (user_id) await this.usersService.delete(user_id)
+            throw new InternalServerErrorException('Error creating user');
         }
     }
 

@@ -4,6 +4,8 @@ import { IEntity } from 'src/interfaces';
 import { Customer } from './entity';
 import { CreateCustomerDTO, UpdateCustomerDTO } from './dto/customer.dto';
 import { Repository } from 'typeorm';
+import { CreateUserDTO } from '../users/dto';
+import { User } from '../users/entity';
 
 @Injectable()
 export class CustomersService implements IEntity<Customer, CreateCustomerDTO, UpdateCustomerDTO>{
