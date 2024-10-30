@@ -19,16 +19,16 @@ export class AuthService {
 
     async validateUser(email: string, password: string): Promise<any> {
         if (email === '' && password === '') {
-            return Promise.reject(new Error('Email and password are required'));
+            return new Error('Email and password are required');
         }
 
         const user = await this.usersService.findOne(email);
         if (!user) {
-            return Promise.reject(new Error('User not found'));
+            return new Error('User not found');
         }
         const isPasswordValid = await this.usersService.comparePassword(password, user.password);
         if (!isPasswordValid) {
-            return Promise.reject(new Error('Invalid password'));
+            return new Error('Invalid password');
         }
         return Promise.resolve(user);
     }
@@ -47,7 +47,7 @@ export class AuthService {
             return this.generateJwt({
                 sub: userExists.id,
                 email: userExists.email,
-                role: userExists.role,
+                role: 'customer',
             });
         }
         return this.generateJwt({
@@ -93,6 +93,7 @@ export class AuthService {
                 email: user.email,
                 password: user.password,
                 google_id: user.google_id,
+                role: 'customer',
             };
             const newUser = await this.usersService.create(userDTO);
 
@@ -113,8 +114,6 @@ export class AuthService {
             return new InternalServerErrorException('Error creating user');
         }
     }
-
-    async logOut() {}
 
     googleAuth(req: any) {
         if (!req.user) {
@@ -158,5 +157,24 @@ export class AuthService {
         }
 
         return { message: 'Password reset email sent.' };
+    }
+
+    async loginAdmin(user: LoginDTO) {
+        
+        const userExists = await this.validateUser(user.email, user.password);
+        
+
+        if (userExists instanceof Error) {
+            throw new BadRequestException("Wrong email or password");
+        }
+        if (userExists.role !== 'admin') {
+            throw new UnauthorizedException('Unauthorized');
+        }
+
+        return this.generateJwt({
+            sub: userExists.id,
+            email: userExists.email,
+            role: userExists.role,
+        });
     }
 }

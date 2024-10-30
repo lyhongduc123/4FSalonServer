@@ -76,4 +76,10 @@ export class AuthController {
     async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDTO) {
         return this.authService.forgotPassword(forgotPasswordDto.email);
     }
+
+    @Post('login-admin')
+    @ApiUnauthorizedResponse({ description: 'Invalid password' }) 
+    async loginAdmin(@Body() user: LoginDTO): Promise<any> {
+        return await this.authService.loginAdmin(user);
+    }
 }

@@ -24,11 +24,7 @@ export class AppointmentsController {
 
     @Get(':id')
     async findOne(
-        @Param(
-            'id',
-            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
-            ) 
-        id: number
+        @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
         return await this.appointmentsService.findOne(id);
     }
@@ -87,7 +83,9 @@ export class AppointmentsController {
     }
 
     @Delete(':id')
-    async remove(id: number): Promise<any> {
+    async remove(
+        @Param('id', new ParseIntPipe()) id: number
+    ): Promise<any> {
         return await this.appointmentsService.remove(id);
     }
 }
