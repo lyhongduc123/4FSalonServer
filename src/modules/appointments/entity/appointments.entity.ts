@@ -10,7 +10,8 @@ import {
     ManyToMany, 
     JoinTable, 
     PrimaryGeneratedColumn, 
-    UpdateDateColumn 
+    UpdateDateColumn, 
+    RelationId
 } from "typeorm";
 
 @Entity('appointments')
@@ -28,7 +29,7 @@ export class Appointment {
     start_time: Date;
 
     @Column()
-    estimate_end_time: Date;
+    estimated_end_time: Date;
 
     @Column({
         type: 'enum',
@@ -47,15 +48,21 @@ export class Appointment {
     @JoinColumn({ name: 'customer_id' })
     customer: Customer;
 
-    @ManyToOne(() => Employee, (employee) => employee, { nullable: false })
+    @ManyToOne(() => Employee, (employee) => employee.appointments, { nullable: false })
     @JoinColumn({ name: 'employee_id' })
     employee: Employee;
 
-    @ManyToMany(() => Service, (service) => service.appointments)
-    @JoinTable({
-        name: 'appointment_services',
-        joinColumns: [{ name: 'appointment_id' }],
-        inverseJoinColumns: [{ name: 'service_id' }]
-    })
-    services: Service[]
+    @RelationId((appointment: Appointment) => appointment.employee)
+    employee_id: number;
+
+    @RelationId((appointment: Appointment) => appointment.customer)
+    customer_id: number;
+
+    // @ManyToMany(() => Service, (service) => service.appointments)
+    // @JoinTable({
+    //     name: 'appointment_services',
+    //     joinColumns: [{ name: 'appointment_id' }],
+    //     inverseJoinColumns: [{ name: 'service_id' }]
+    // })
+    // services: Service[]
 }

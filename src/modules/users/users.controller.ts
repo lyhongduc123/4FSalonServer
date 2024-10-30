@@ -46,20 +46,20 @@ export class UsersController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin')
-    @Get('find')
+    @Get('search')
     async findBy(where: any): Promise<any[]> {
         return await this.usersService.findBy(where);
     }
     
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin')
-    @Post('create')
+    @Post()
     async create(@Body() createUserDto: CreateUserDTO): Promise<any> {
         return await this.usersService.create(createUserDto);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Put('update')
+    @Put()
     async update(user: UpdateUserDTO): Promise<any> {
         return await this.usersService.update(user);
     }

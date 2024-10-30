@@ -28,19 +28,19 @@ export class ServicesController {
     }
 
     @Roles('admin')
-    @Get('find')
+    @Get('search')
     async findBy(where: any): Promise<any[]> {
         return await this.servicesService.findBy(where);
     }
 
     @Roles('admin')
-    @Post('create')
+    @Post()
     async create(service: CreateServiceDTO): Promise<any> {
         return await this.servicesService.create(service);
     }
 
     @Roles('admin')
-    @Put('update')
+    @Put()
     async update(service: UpdateServiceDTO): Promise<any> {
         return await this.servicesService.update(service);
     }

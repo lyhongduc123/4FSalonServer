@@ -5,6 +5,7 @@ import { UsersModule } from '../users/users.module';
 import { AuthService } from './auth.service';
 import { GoogleStrategy } from './strategy/google.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { CustomersModule } from '../customers/customers.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { JwtStrategy } from './strategy/jwt.strategy';
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' }
     }),
-    UsersModule
+    UsersModule,
+    CustomersModule,
   ],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy, JwtStrategy],

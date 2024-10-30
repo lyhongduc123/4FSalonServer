@@ -66,6 +66,13 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
         return 'User deleted';
     }
 
+    async delete(id: number): Promise<any> {
+        await this.usersRepository.delete(
+            { id: id }
+        );
+        return 'User deleted';
+    }
+
     async comparePassword(password: string, hash: string): Promise<boolean> {
         return bcrypt.compare(password, hash);
     }

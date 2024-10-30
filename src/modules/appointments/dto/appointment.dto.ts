@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { ApiProperty, PartialType } from "@nestjs/swagger";
+import { IsArray, IsDate, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class CreateAppointmentDTO {
     @ApiProperty()
@@ -8,26 +8,39 @@ export class CreateAppointmentDTO {
 
     @ApiProperty()
     @IsNumber()
-    stylelist_id: number;
+    employee_id: number;
 
     @ApiProperty()
-    @IsDate()
     @IsNotEmpty()
     date: Date;
 
     @ApiProperty()
-    @IsDate()
     @IsNotEmpty()
     start_time: Date;
 
     @ApiProperty()
-    @IsDate()
     estimated_end_time: Date;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    status: string;
 
     @ApiProperty()
     @IsNumber()
     @IsNotEmpty()
     user_id: number;
+
+    @ApiProperty()
+    @IsNumber()
+    service_id: number;
 }
 
-export class UpdateAppointmentDTO extends CreateAppointmentDTO {}
+export class UpdateAppointmentDTO extends PartialType(CreateAppointmentDTO) {}
+
+export class AppointmentStatusDTO {
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    status: string;
+}

@@ -15,9 +15,9 @@ import { GoogleOauthGuard } from './../../common';
 import { JwtAuthGuard } from './../../common';
 import { Roles } from './../../common/decorators';
 import { RolesGuard } from './../../common/guards';
-import { CreateUserDTO } from '../users/dto';
-import { LoginDTO, ChangePasswordDto, ForgotPasswordDto } from './dto';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { CreateUserDTO, CustomerUserDTO } from '../users/dto';
+import { LoginDTO, ChangePasswordDTO, ForgotPasswordDTO } from './dto';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiHeader, ApiHeaders, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 
 @ApiTags('Auth')
@@ -50,24 +50,12 @@ export class AuthController {
     }
 
     @Post('register')
-    async register(@Body() createUserDTO: CreateUserDTO): Promise<any> {
-        return this.authService.register(createUserDTO);
+    @ApiBadRequestResponse({ description: 'User already exists'})
+    @ApiInternalServerErrorResponse({ description: 'Error creating user'})
+    async register(@Body() customerUserDTO: CustomerUserDTO): Promise<any> {
+        return this.authService.register(customerUserDTO);
     }
 
-    @ApiBody({
-        schema: {
-            type: 'object',
-            properties: {
-                email: {
-                    type: 'string',
-                    example: 'myhandle@gmail.com',
-                },
-                password: {
-                    type: 'string',
-                    example: 'password',
-                }
-            }
-    }})
     @Post('login')
     async login(@Body() user: LoginDTO): Promise<any> {
         return this.authService.login(user);
@@ -77,18 +65,21 @@ export class AuthController {
     @Roles('customer')
     @Roles('admin')
     @Post('change-password')
-    async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    @ApiNotFoundResponse({ description: 'User not found' })
+    @ApiUnauthorizedResponse({ description: 'Invalid password' })
+    @ApiResponse({ status: 200, description: 'Password changed successfully' })
+    async changePassword(@Body() changePasswordDto: ChangePasswordDTO) {
         return this.authService.changePassword(changePasswordDto);
     }
 
-    /**
-     * 
-     * @param req 
-     * @param forgotPasswordDto 
-     * @returns 
-     */
     @Post('forgot-password')
-    async forgotPassword(@Req() req: Request, @Body() forgotPasswordDto: ForgotPasswordDto) {
+    async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDTO) {
         return this.authService.forgotPassword(forgotPasswordDto.email);
+    }
+
+    @Post('login-admin')
+    @ApiUnauthorizedResponse({ description: 'Invalid password' }) 
+    async loginAdmin(@Body() user: LoginDTO): Promise<any> {
+        return await this.authService.loginAdmin(user);
     }
 }

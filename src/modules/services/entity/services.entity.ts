@@ -27,6 +27,6 @@ export class Service {
     @DeleteDateColumn()
     deleteAt: Date;
 
-    @ManyToMany(() => Appointment, (appointment) => appointment.services)
-    appointments: Appointment[]
+    // @ManyToMany(() => Appointment, (appointment) => appointment.services)
+    // appointments: Appointment[]
 }

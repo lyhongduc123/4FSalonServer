@@ -16,28 +16,24 @@ export class BranchesController {
 
     @Get(':id')
     async findOne(
-        @Param(
-            'id',
-            new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
-            ) 
-        id: number
+        @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
         return await this.branchesService.findOne(id);
     }
 
-    @Get('find')
+    @Get('search')
     async findBy(where: any): Promise<any[]> {
         return await this.branchesService.findBy(where);
     }
 
     @Roles('admin')
-    @Post('create')
+    @Post()
     async create(branch: any): Promise<any> {
         return await this.branchesService.create(branch);
     }
 
     @Roles('admin')
-    @Put('update')
+    @Put('id')
     async update(branch: any): Promise<any> {
         return await this.branchesService.update(branch);
     }

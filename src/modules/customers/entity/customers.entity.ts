@@ -14,19 +14,30 @@ export class Customer {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @Column({
+        nullable: false,
+    })
     name: string;
 
-    @Column()
+    @Column({
+        unique: true,
+        nullable: false,
+    })
     email: string;
 
-    @Column()
+    @Column({
+        nullable: true,
+    })
     phone: string;
 
-    @Column()
+    @Column({
+        default: 0,
+    })
     booking_count: number;
 
-    @Column()
+    @Column({
+        default: 0,
+    })
     cancel_count: number;
 
     @OneToOne(() => User, (user) => user.id)

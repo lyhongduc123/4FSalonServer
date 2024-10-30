@@ -2,13 +2,13 @@ export interface IEntity<Entity = any, Create = any, Update = any> {
 
     findAll(): Promise<Entity[]>;
 
-    findOne(id: number): Promise<Entity>;
+    findOne(id: any): Promise<Entity>;
 
     findBy(where: any): Promise<Entity[]>;
 
-    create(entity: Create): Promise<Entity>;
+    create(entity: Create, relations1?: any, relations2?: any): Promise<Entity>;
     
-    update(entity: Update): Promise<Entity>;
+    update(id: any, entity: Update): Promise<Entity>;
 
-    remove(id: number): Promise<any>;
+    remove(id: any): Promise<any>;
 }
