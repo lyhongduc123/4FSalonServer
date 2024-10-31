@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, 
 import { AppointmentsService } from './appointments.service';
 import { JwtAuthGuard, Roles, RolesGuard } from 'src/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AppointmentStatusDTO, CreateAppointmentDTO, UpdateAppointmentDTO } from './dto';
+import { AppointmentDTO, AppointmentStatusDTO, CreateAppointmentDTO, UpdateAppointmentDTO } from './dto';
 import { CustomersService } from '../customers/customers.service';
 import { EmployeesService } from '../employees/employees.service';
 import { Appointment } from './entity';
@@ -45,7 +45,7 @@ export class AppointmentsController {
         summary: 'Search appointments',
         description: 'Search appointments in the database * Requires logged in *'
     })
-    @ApiBody({ type: Appointment })
+    @ApiBody({ type: AppointmentDTO })
     async findBy(@Body() where: any): Promise<any[]> {
         return await this.appointmentsService.findBy(where);
     }
@@ -90,7 +90,8 @@ export class AppointmentsController {
         @Body() updateAppointmentDTO: UpdateAppointmentDTO
     ): Promise<any> {
         try {
-            return await this.appointmentsService.update(id, updateAppointmentDTO);
+            updateAppointmentDTO.id = id;
+            return await this.appointmentsService.update(updateAppointmentDTO);
         } catch (error) {
             throw new BadRequestException(error.message);
         }

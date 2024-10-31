@@ -40,6 +40,9 @@ export class Customer {
     })
     cancel_count: number;
 
+    @Column()
+    user_id: number;
+
     @OneToOne(() => User, (user) => user.id)
     @JoinColumn({ name: 'user_id' })
     user: User;

@@ -1,7 +1,5 @@
-import { Delete } from "@nestjs/common";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, RelationId, UpdateDateColumn } from "typeorm";
 import { Branch } from "../../branches/entity";
-import { User } from "../../users/entity";
 import { Appointment } from "../../appointments/entity";
 
 @Entity('employees')
@@ -36,6 +34,9 @@ export class Employee {
     @Column()
     status: boolean;
 
+    @Column()
+    branch_id: number;
+
     @CreateDateColumn()
     created_at: Date;
 
@@ -48,10 +49,6 @@ export class Employee {
     @ManyToOne(() => Branch, (branch) => branch.employees)
     @JoinColumn({ name: 'branch_id' })
     branch: Branch;
-
-    @OneToOne(() => User, (user) => user.id)
-    @JoinColumn({ name: 'user_id' })
-    user: User;
 
     @OneToMany(() => Appointment, (appointment) => appointment.employee)
     appointments: Appointment[]

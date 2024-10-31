@@ -39,10 +39,10 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
         return newAppointment;
     }
 
-    async update(id: number, appointment: UpdateAppointmentDTO): Promise<Appointment> {
-        if (!id) throw new Error('Id not provided');
+    async update(appointment: UpdateAppointmentDTO): Promise<Appointment> {
+        if (!appointment.id) throw new Error('Id not provided');
 
-        let oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id });
+        let oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id: appointment.id });
         if (!oldAppointment) throw new Error('Appointment not found');
 
         oldAppointment = { ...oldAppointment, ...appointment };

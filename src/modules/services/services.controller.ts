@@ -52,13 +52,17 @@ export class ServicesController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin')
-    @Put()
+    @Put(':id')
     @ApiOperation({
         summary: 'Update service',
         description: 'Update a service in the database'
     })
     @ApiBearerAuth('JWT-auth')
-    async update(@Body() updateServiceDTO: UpdateServiceDTO): Promise<any> {
+    async update(
+        @Param('id', new ParseIntPipe()) id: number,
+        @Body() updateServiceDTO: UpdateServiceDTO
+    ): Promise<any> {
+        updateServiceDTO.id = id;
         return await this.servicesService.update(updateServiceDTO);
     }
 

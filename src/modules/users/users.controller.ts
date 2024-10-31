@@ -13,7 +13,7 @@ import {
     Patch
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDTO, UpdateUserDTO, UserDTO } from './dto';
+import { CreateUserDTO, UpdateUserDTO } from './dto';
 import { JwtAuthGuard } from './../../common';
 import { Roles } from './../../common/decorators';
 import { RolesGuard } from './../../common';
@@ -54,7 +54,7 @@ export class UsersController {
         summary: 'Get list of users by search', 
         description: 'Get a list of users by search from the database'
     })
-    async findBy(@Body() where: UserDTO): Promise<any[]> {
+    async findBy(@Body() where: CreateUserDTO): Promise<any[]> {
         return await this.usersService.findBy(where);
     }
     
@@ -67,12 +67,16 @@ export class UsersController {
         return await this.usersService.create(createUserDto);
     }
 
-    @Put()
+    @Put(':id')
     @ApiOperation({ 
         summary: 'Update a user', 
         description: 'Update a user in the database'
     })
-    async update(@Body() user: UpdateUserDTO): Promise<any> {
+    async update(
+        @Param('id', new ParseIntPipe()) id: number,
+        @Body() user: UpdateUserDTO
+    ): Promise<any> {
+        user.id = id;
         return await this.usersService.update(user);
     }
 

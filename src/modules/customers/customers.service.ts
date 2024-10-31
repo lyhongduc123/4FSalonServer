@@ -27,16 +27,25 @@ export class CustomersService implements IEntity<Customer, CreateCustomerDTO, Up
     }
 
     async create(customer: CreateCustomerDTO): Promise<Customer> {
-        if (!customer.email) {
-            throw new Error('Email is required');
+        const customerExists = await this.customersRepository.findOneBy({
+            name: customer.name,
+            email: customer.email,
+        });
+        if (customerExists) {
+            throw new Error('Customer already exists');
         }
-        if (!customer.name) {
-            throw new Error('Name is required');
-        }
-        return this.customersRepository.save(customer);
+        const newCustomer = this.customersRepository.create(customer);
+        return this.customersRepository.save(newCustomer);
     }
 
     async update(customer: UpdateCustomerDTO): Promise<Customer> {
+        if (!customer.id) {
+            throw new Error('Id is required');
+        }
+        const customerExist = await this.customersRepository.findOneBy({ id: customer.id });
+        if (!customerExist) {
+            throw new Error('Customer not found');
+        }
         return this.customersRepository.save(customer);
     }
 

@@ -25,10 +25,22 @@ export class BranchesService implements IEntity<Branch, CreateBranchDTO, UpdateB
     }
 
     async create(branch: CreateBranchDTO): Promise<Branch> {
-        return this.branchesRepository.save(branch);
+        const branchExist = await this.branchesRepository.findOneBy(branch);
+        if (branchExist) {
+            throw new Error('Branch already exist');
+        }
+        const newBranch = this.branchesRepository.create(branch);
+        return this.branchesRepository.save(newBranch);
     }
 
     async update(branch: UpdateBranchDTO): Promise<Branch> {
+        if (!branch.id) {
+            throw new Error('Branch id is required');
+        }
+        const branchExist = await this.branchesRepository.findOneBy({ id: branch.id });
+        if (!branchExist) {
+            throw new Error('Branch not found');
+        }
         return this.branchesRepository.save(branch);
     }
 
@@ -36,4 +48,7 @@ export class BranchesService implements IEntity<Branch, CreateBranchDTO, UpdateB
         return this.branchesRepository.softDelete({ id });
     }
 
+    async delete(id: number): Promise<any> {
+        return this.branchesRepository.delete({ id });
+    }
 }

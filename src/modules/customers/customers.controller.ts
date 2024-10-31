@@ -59,7 +59,11 @@ export class CustomersController {
         summary: 'Update a customer',
         description: 'Update a customer in the database * Requires Admin Role *'
     })
-    async update(@Body() customer: UpdateCustomerDTO): Promise<any> {
+    async update(
+        @Param('id', new ParseIntPipe()) id: number,
+        @Body() customer: UpdateCustomerDTO
+    ): Promise<any> {
+        customer.id = id;
         return await this.customersService.update(customer);
     }
 
