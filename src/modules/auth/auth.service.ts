@@ -89,6 +89,7 @@ export class AuthService {
             throw new BadRequestException('User already exists');
         }
         let user_id = null
+        
         try {
             const userDTO: CreateUserDTO = {...user, role: 'customer'}
             const newUser = await this.usersService.create(userDTO)
@@ -96,6 +97,7 @@ export class AuthService {
             const customerDTO: CreateCustomerDTO = {...user, user_id: newUser.id}
             const newCustomer = await this.customersService.create(customerDTO);
             newCustomer.user = newUser;
+            console.log(newUser)
             return this.generateJwt ({
                 sub: newUser.id,
                 email: newUser.email,
@@ -160,7 +162,7 @@ export class AuthService {
             throw new BadRequestException("Wrong email or password");
         }
         if (userExists.role !== 'admin') {
-            throw new UnauthorizedException('Unauthorized');
+            throw new UnauthorizedException('Unauthorized', userExists.role);
         }
 
         return this.generateJwt({
