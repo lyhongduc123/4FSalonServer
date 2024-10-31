@@ -14,6 +14,7 @@ import {
     UpdateDateColumn, 
     RelationId
 } from "typeorm";
+import { Branch } from "src/modules/branches/entity";
 
 @Entity('appointments')
 export class Appointment {
@@ -34,10 +35,19 @@ export class Appointment {
 
     @Column({
         type: 'enum',
-        enum: ['pending', 'completed', 'cancelled'],
+        enum: ['pending', 'confirmed', 'completed', 'cancelled'],
         default: 'pending'
     })
     status: string;
+
+    @Column()
+    customer_id: number;
+
+    @Column()
+    employee_id: number;
+
+    @Column()
+    branch_id: number;
 
     @CreateDateColumn()
     created_at: Date;
@@ -53,12 +63,10 @@ export class Appointment {
     @JoinColumn({ name: 'employee_id' })
     employee: Employee;
 
-    @RelationId((appointment: Appointment) => appointment.employee)
-    employee_id: number;
-
-    @RelationId((appointment: Appointment) => appointment.customer)
-    customer_id: number;
-
+    @ManyToOne(() => Branch, (branch) => branch.appointments, { nullable: false })
+    @JoinColumn({ name: 'branch_id' })
+    branch: Branch;
+    
     // @ManyToMany(() => Service, (service) => service.appointments)
     // @JoinTable({
     //     name: 'appointment_services',

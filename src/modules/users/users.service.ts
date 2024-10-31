@@ -35,6 +35,10 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
     }
 
     async create(user: CreateUserDTO): Promise<User> {
+        const userExists = await this.findOne(user.email);
+        if (userExists) {
+            throw new Error('User already exists');
+        }
         if (user.password !== undefined && user.password !== null && user.password !== '') {
             user.password = await this.hashPassword(user.password);
         }
@@ -47,6 +51,13 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
     }
 
     async update(user: UpdateUserDTO): Promise<User> {
+        if (!user.id) {
+            throw new Error('Missing user id');
+        }
+        const userExists = await this.findOne(user.id);
+        if (!userExists) {
+            throw new Error('User not found');
+        }
         if (user.password !== undefined && user.password !== null && user.password !== '') {
             user.password = await this.hashPassword(user.password);
         }
@@ -54,7 +65,6 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
             user.role = 'customer';
         }
         const updatedUser = await this.usersRepository.save(user);
-        console.log(updatedUser);
         delete updatedUser.password;
         return updatedUser;
     }

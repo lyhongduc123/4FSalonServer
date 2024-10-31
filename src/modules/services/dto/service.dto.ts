@@ -7,6 +7,11 @@ import {
 } from 'class-validator'
 
 export class CreateServiceDTO {
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    @IsOptional()
+    id?: number;
+
     @ApiProperty({ example: 'Cat toc' })
     @IsString()
     @IsNotEmpty()
@@ -28,10 +33,4 @@ export class CreateServiceDTO {
     price: number;
 }
 
-export class UpdateServiceDTO extends PartialType(CreateServiceDTO) {
-    @ApiProperty({ example: 1 })
-    @IsNumber()
-    @IsNotEmpty()
-    @IsOptional()
-    id: number;
-}
+export class UpdateServiceDTO extends PartialType(CreateServiceDTO) {}

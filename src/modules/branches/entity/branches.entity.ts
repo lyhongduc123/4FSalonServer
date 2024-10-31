@@ -1,3 +1,4 @@
+import { User } from "./../../users/entity";
 import { Employee } from "./../../employees/entity";
 import { 
     Column, 
@@ -6,7 +7,10 @@ import {
     DeleteDateColumn, 
     Entity, 
     UpdateDateColumn, 
-    OneToMany} from "typeorm";
+    OneToMany,
+    OneToOne,
+    JoinColumn} from "typeorm";
+import { Appointment } from "src/modules/appointments/entity";
 
 
 @Entity('branches')
@@ -37,9 +41,16 @@ export class Branch {
     })
     status: boolean;
 
+    @OneToOne(() => User, (user) => user.id)
+    @JoinColumn({ name: 'user_id' })
+    user: User;
+
     @OneToMany(() => Employee, (employee) => employee.branch)
     employees: Employee[];
 
+    @OneToMany(() => Appointment, (appointment) => appointment.branch)
+    appointments: Appointment[];
+   
     @CreateDateColumn()
     created_at: Date;
 

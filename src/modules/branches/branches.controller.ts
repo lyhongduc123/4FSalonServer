@@ -52,13 +52,17 @@ export class BranchesController {
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin')
-    @Put('id')
+    @Put(':id')
     @ApiOperation({
         summary: 'Update a branch',
         description: 'Update a branch in the database'
     })
     @ApiBearerAuth('JWT-auth')
-    async update(@Body() branch: UpdateBranchDTO): Promise<any> {
+    async update(
+        @Param('id', new ParseIntPipe()) id: number,
+        @Body() branch: UpdateBranchDTO
+    ): Promise<any> {
+        branch.id = id;
         return await this.branchesService.update(branch);
     }
 
@@ -71,6 +75,18 @@ export class BranchesController {
     })
     @ApiBearerAuth('JWT-auth')
     async remove(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
+        return await this.branchesService.remove(id);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('admin')
+    @Delete(':id')
+    @ApiOperation({
+        summary: 'Delete a branch',
+        description: 'Delete a branch from the database'
+    })
+    @ApiBearerAuth('JWT-auth')
+    async delete(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
         return await this.branchesService.remove(id);
     }
 }

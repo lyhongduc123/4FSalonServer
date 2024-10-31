@@ -25,10 +25,25 @@ export class ServicesService implements IEntity<Service, CreateServiceDTO, Updat
     }
 
     async create(service: CreateServiceDTO): Promise<Service> {
-        return this.servicesRepository.save(service);
+        const serviceExists = await this.servicesRepository.findOneBy({
+            title: service.title,
+            description: service.description,
+        });
+        if (serviceExists) {
+            throw new Error('Service already exists');
+        }
+        const newService = this.servicesRepository.create(service);
+        return this.servicesRepository.save(newService);
     }
 
     async update(service: UpdateServiceDTO): Promise<Service> {
+        if (!service.id) {
+            throw new Error('Missing service id');
+        }
+        const serviceExists = await this.findOne(service.id);
+        if (!serviceExists) {
+            throw new Error('Service not found');
+        }
         return this.servicesRepository.save(service);
     }
 

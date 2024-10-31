@@ -7,7 +7,12 @@ import {
 } from 'class-validator';
 
 export class CreateEmployeeDTO {
-    @ApiProperty({ example: 'John Doe' })
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    @IsOptional()
+    id?: number;
+
+    @ApiProperty({ example: 'PC01' })
     @IsString()
     name: string;
 
@@ -21,43 +26,29 @@ export class CreateEmployeeDTO {
     @IsNotEmpty()
     phone: string;
 
-    @ApiProperty({ example: '10 Le Van Luong, Thanh Xuan, Ha Noi' })
-    @IsString()
-    @IsNotEmpty()
-    address: string;
-
     @ApiProperty({ example: 'stylist' })
     @IsString()
     @IsNotEmpty()
-    position: string;
+    work_position: string;
+
+    @ApiProperty({ example: 'Monday' })
+    @IsString()
+    @IsNotEmpty()
+    available_from: string;
+
+    @ApiProperty({ example: 'Sunday' })
+    @IsString()
+    @IsNotEmpty()
+    available_to: string;
+
+    @ApiProperty({ example: true, description: 'true = working, false = not working' })
+    @IsNotEmpty()
+    status: boolean;
 
     @ApiProperty({ example: 1 })
     @IsNumber()
     @IsNotEmpty()
     branch_id: number;
-
-    @ApiProperty({ example: 1 })
-    @IsNumber()
-    @IsOptional()
-    user_id?: number;
 }
 
-export class UpdateEmployeeDTO extends PartialType(CreateEmployeeDTO) {
-    @ApiProperty({ example: 1 })
-    @IsNumber()
-    @IsNotEmpty()
-    @IsOptional()
-    id: number;
-}
-
-export class CreateEmployeeUserDTO extends CreateEmployeeDTO {
-    @ApiProperty({ example: 'password' })
-    @IsString()
-    @IsNotEmpty()
-    password: string;
-
-    @ApiProperty({ example: 'admin' })
-    @IsString()
-    @IsNotEmpty()
-    role: string;
-}
+export class UpdateEmployeeDTO extends PartialType(CreateEmployeeDTO) {}

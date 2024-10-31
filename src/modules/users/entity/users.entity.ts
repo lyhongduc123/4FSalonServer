@@ -9,7 +9,7 @@ import {
     DeleteDateColumn,
 } from 'typeorm';
 import { Customer } from '../../customers/entity';
-import { Employee } from '../../employees/entity';
+import { Branch } from '../../branches/entity';
 
 
 @Entity('users')
@@ -56,6 +56,6 @@ export class User {
     @OneToOne(() => Customer, (customer) => customer.user)
     customer: Customer;
 
-    @OneToOne(() => Employee, (employee) => employee.user)
-    employee: Employee;
+    @OneToOne(() => Branch, (branch) => branch.user)
+    branch: Branch;
 }

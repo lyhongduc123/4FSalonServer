@@ -93,11 +93,14 @@ export class AuthService {
         try {
             const userDTO: CreateUserDTO = {...user, role: 'customer'}
             const newUser = await this.usersService.create(userDTO)
+            
             user_id = newUser.id
+
             const customerDTO: CreateCustomerDTO = {...user, user_id: newUser.id}
             const newCustomer = await this.customersService.create(customerDTO);
+
             newCustomer.user = newUser;
-            console.log(newUser)
+
             return this.generateJwt ({
                 sub: newUser.id,
                 email: newUser.email,
@@ -154,15 +157,13 @@ export class AuthService {
     }
 
     async loginAdmin(user: LoginDTO) {
-        
         const userExists = await this.validateUser(user.email, user.password);
         
-
         if (userExists instanceof Error) {
             throw new BadRequestException("Wrong email or password");
         }
         if (userExists.role !== 'admin') {
-            throw new UnauthorizedException('Unauthorized', userExists.role);
+            throw new UnauthorizedException('Unauthorized');
         }
 
         return this.generateJwt({

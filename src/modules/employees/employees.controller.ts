@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, HttpStatus, InternalServerErrorException, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, InternalServerErrorException, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard, Roles, RolesGuard } from './../../common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { CreateEmployeeUserDTO, UpdateEmployeeDTO } from './dto';
-import { CreateUserDTO } from '../users/dto';
+import { CreateEmployeeDTO, UpdateEmployeeDTO } from './dto';
+import { BranchesService } from '../branches/branches.service';
 import { Employee } from './entity';
 
 @ApiTags('Employees')
@@ -12,7 +12,7 @@ import { Employee } from './entity';
 export class EmployeesController {
     constructor(
         private employeesService: EmployeesService,
-        private usersService: UsersService
+        private branchesService: BranchesService
     ) {}
 
     @Get()
@@ -53,21 +53,13 @@ export class EmployeesController {
         description: 'Create employee'
     })
     @ApiBearerAuth('JWT-auth')
-    async create(@Body() employee: CreateEmployeeUserDTO): Promise<any> {
-        if (employee.password) {
-            const user: CreateUserDTO = {
-                email: employee.email,
-                password: employee.password,
-                role: employee.role
-            };
-            try {
-                const newUser = await this.usersService.create(user);
-                employee.user_id = newUser.id;
-            } catch (error) {
-                return new InternalServerErrorException(error.message);
-            }
+    async create(@Body() employee: CreateEmployeeDTO): Promise<any> {
+        const branchExist = await this.branchesService.findOne(employee.branch_id);
+        if (!branchExist) {
+            throw new BadRequestException('Branch not found');
         }
-        return await this.employeesService.create(employee);
+        const newEmployee = await this.employeesService.create(employee, branchExist);
+        return newEmployee;
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
@@ -78,7 +70,11 @@ export class EmployeesController {
         description: 'Update employee by id'
     })
     @ApiBearerAuth('JWT-auth')
-    async update(@Body() employee: UpdateEmployeeDTO): Promise<any> {
+    async update(
+        @Param('id', new ParseIntPipe()) id: number,
+        @Body() employee: UpdateEmployeeDTO
+    ): Promise<any> {
+        employee.id = id;
         return await this.employeesService.update(employee);
     }
 
@@ -92,5 +88,17 @@ export class EmployeesController {
     @ApiBearerAuth('JWT-auth')
     async remove(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
         return await this.employeesService.remove(id);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles('admin')
+    @Delete(':id')
+    @ApiOperation({
+        summary: 'Delete employee',
+        description: 'Delete employee by id'
+    })
+    @ApiBearerAuth('JWT-auth')
+    async delete(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
+        return await this.employeesService.delete(id);
     }
 }
