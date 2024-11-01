@@ -41,6 +41,9 @@ export class Branch {
     })
     status: boolean;
 
+    @Column()
+    user_id: number;
+
     @OneToOne(() => User, (user) => user.id)
     @JoinColumn({ name: 'user_id' })
     user: User;
