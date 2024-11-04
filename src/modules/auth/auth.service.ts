@@ -88,6 +88,7 @@ export class AuthService {
         if (userExists) {
             throw new BadRequestException('User already exists');
         }
+        user.id = null;
         let user_id = null
         
         try {
@@ -108,6 +109,7 @@ export class AuthService {
             })
         } catch (error) {
             if (user_id) await this.usersService.delete(user_id)
+            console.log(user_id)
             throw new InternalServerErrorException('Error creating user');
         }
     }
@@ -162,7 +164,7 @@ export class AuthService {
         if (userExists instanceof Error) {
             throw new BadRequestException("Wrong email or password");
         }
-        if (userExists.role !== 'admin') {
+        if (userExists.role !== 'admin' && userExists.role !== 'manager') {
             throw new UnauthorizedException('Unauthorized');
         }
 

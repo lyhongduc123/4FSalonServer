@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, InternalServerErrorException, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, InternalServerErrorException, Param, ParseIntPipe, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard, Roles, RolesGuard } from './../../common';
@@ -20,7 +20,13 @@ export class EmployeesController {
         summary: 'Get all employees', 
         description: 'Get all employees'
     })
-    async findAll(): Promise<any[]> {
+    async findAll(@Req() req: any): Promise<any[]> {
+        if (req.user.role === 'manager') {
+            const branchExist = await this.branchesService.findBy({user_id: req.user.id});
+            return await this.employeesService.findBy({ 
+                branch_id: branchExist[0].id
+            });
+        }
         return await this.employeesService.findAll();
     }
 

@@ -45,6 +45,7 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
         if (!user.role) {
             user.role = 'customer';
         }
+        // Use save for return of the created user id
         const newUser = await this.usersRepository.save(user);
         delete newUser.password;
         return newUser;
@@ -61,8 +62,8 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
         if (user.password !== undefined && user.password !== null && user.password !== '') {
             user.password = await this.hashPassword(user.password);
         }
-        if (!user.role) {
-            user.role = 'customer';
+        if (userExists.role === 'admin' && user.role !== 'admin') {
+            throw new Error('Admin role cannot be changed');
         }
         const updatedUser = await this.usersRepository.save(user);
         delete updatedUser.password;
