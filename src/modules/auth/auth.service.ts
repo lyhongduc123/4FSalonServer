@@ -8,6 +8,7 @@ import { ChangePasswordDTO } from './dto';
 import { CreateCustomerDTO } from '../customers/dto/customer.dto';
 import { CustomersService } from '../customers/customers.service';
 import { Roles } from 'src/common';
+import { access } from 'fs';
 
 @Injectable()
 export class AuthService {
@@ -166,6 +167,18 @@ export class AuthService {
         }
         if (userExists.role !== 'admin' && userExists.role !== 'manager') {
             throw new UnauthorizedException('Unauthorized');
+        }
+        if (userExists.role === 'manager') {
+            const userDetails = await this.usersService.findBy(true, {email: user.email});
+            const token = await this.generateJwt({
+                sub: userExists.id,
+                email: userExists.email,
+                role: userExists.role,
+            })
+            return { 
+                access_token: token.access_token,
+                branch_id: userDetails[0].branch.id
+            }
         }
 
         return this.generateJwt({

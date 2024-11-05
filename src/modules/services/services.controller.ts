@@ -39,7 +39,7 @@ export class ServicesController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Post()
     @ApiOperation({
         summary: 'Create service',
@@ -51,7 +51,7 @@ export class ServicesController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Put(':id')
     @ApiOperation({
         summary: 'Update service',
@@ -67,7 +67,7 @@ export class ServicesController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Delete(':id')
     @ApiOperation({
         summary: 'Delete service',

@@ -1,4 +1,4 @@
-import { Controller, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Delete, UseGuards, Body } from '@nestjs/common';
+import { Controller, Get, HttpStatus, Param, ParseIntPipe, Post, Put, Delete, UseGuards, Body, Req, BadRequestException } from '@nestjs/common';
 import { BranchesService } from './branches.service';
 import { JwtAuthGuard, Roles, RolesGuard } from './../../common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
@@ -39,7 +39,7 @@ export class BranchesController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Post()
     @ApiOperation({
         summary: 'Create a branch',
@@ -51,7 +51,7 @@ export class BranchesController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Put(':id')
     @ApiOperation({
         summary: 'Update a branch',
@@ -59,6 +59,7 @@ export class BranchesController {
     })
     @ApiBearerAuth('JWT-auth')
     async update(
+        @Req() req: any,
         @Param('id', new ParseIntPipe()) id: number,
         @Body() branch: UpdateBranchDTO
     ): Promise<any> {
@@ -67,7 +68,7 @@ export class BranchesController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Delete(':id')
     @ApiOperation({
         summary: 'Delete a branch',

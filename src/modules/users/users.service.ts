@@ -30,8 +30,9 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
         }
     }
 
-    async findBy(where: any): Promise<User[]> {
-        return this.usersRepository.find({ where });
+    async findBy(relation: Boolean, where: any): Promise<User[]> {
+        relation ? where = { where: where, relations: ['customer', 'branch'] } : where = { where: where };
+        return this.usersRepository.find(where);
     }
 
     async create(user: CreateUserDTO): Promise<User> {

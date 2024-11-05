@@ -34,6 +34,9 @@ export class Employee {
     @Column()
     status: boolean;
 
+    @Column({ type: 'float' })
+    overal_rating: number;
+
     @Column()
     branch_id: number;
 

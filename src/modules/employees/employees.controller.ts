@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Interna
 import { EmployeesService } from './employees.service';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard, Roles, RolesGuard } from './../../common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateEmployeeDTO, UpdateEmployeeDTO } from './dto';
 import { BranchesService } from '../branches/branches.service';
 import { Employee } from './entity';
@@ -21,13 +21,17 @@ export class EmployeesController {
         description: 'Get all employees'
     })
     async findAll(@Req() req: any): Promise<any[]> {
-        if (req.user.role === 'manager') {
-            const branchExist = await this.branchesService.findBy({user_id: req.user.id});
-            return await this.employeesService.findBy({ 
-                branch_id: branchExist[0].id
-            });
-        }
         return await this.employeesService.findAll();
+    }
+
+    @Get('search')
+    @ApiOperation({ 
+        summary: 'Find employee by where clause', 
+        description: 'Find list of employee by where clause'
+    })
+    @ApiQuery({ name: 'where', required: false })
+    async findBy(@Req() where: any): Promise<any[]> {
+        return await this.employeesService.findBy(where);
     }
 
     @Get(':id')
@@ -41,25 +45,23 @@ export class EmployeesController {
         return await this.employeesService.findOne(id);
     }
 
-    @Get('search')
-    @ApiOperation({ 
-        summary: 'Find employee by where clause', 
-        description: 'Find list of employee by where clause'
-    })
-    @ApiBody({ type: Employee })
-    async findBy(@Body() where: any): Promise<any[]> {
-        return await this.employeesService.findBy(where);
-    }
-
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Post()
     @ApiOperation({
         summary: 'Create employee',
         description: 'Create employee'
     })
+    @ApiHeader({
+        name: 'manager_branch_id',
+        description: 'Manager can only create employee in his branch',
+        required: false
+    })
     @ApiBearerAuth('JWT-auth')
-    async create(@Body() employee: CreateEmployeeDTO): Promise<any> {
+    async create(@Req() req: any, @Body() employee: CreateEmployeeDTO): Promise<any> {
+        if (req.user.role === 'manager' && req.user.branch_id !== employee.branch_id) {
+            throw new BadRequestException('Unavailable');
+        }
         const branchExist = await this.branchesService.findOne(employee.branch_id);
         if (!branchExist) {
             throw new BadRequestException('Branch not found');
@@ -69,7 +71,7 @@ export class EmployeesController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Put(':id')
     @ApiOperation({
         summary: 'Update employee',
@@ -77,24 +79,40 @@ export class EmployeesController {
     })
     @ApiBearerAuth('JWT-auth')
     async update(
+        @Req() req: any,
         @Param('id', new ParseIntPipe()) id: number,
         @Body() employee: UpdateEmployeeDTO
     ): Promise<any> {
+        if (req.user.role === 'manager' && req.user.branch_id !== employee.branch_id) {
+           throw new BadRequestException('Unavailable');
+        }
         employee.id = id;
         return await this.employeesService.update(employee);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('admin')
+    @Roles('admin', 'manager')
     @Delete(':id')
     @ApiOperation({
         summary: 'Delete employee',
         description: 'Delete employee by id'
     })
     @ApiBearerAuth('JWT-auth')
-    async remove(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
+    async remove(
+        @Req() req: any,
+        @Param('id', new ParseIntPipe()) id: number
+    ): Promise<any> {
+        const employee = await this.employeesService.findOne(id);
+        if (!employee) {
+            throw new BadRequestException('Employee not found');
+        }
+        if (req.user.role === 'manager' && req.user.branch_id !== employee.branch_id) {
+            throw new BadRequestException('Unavailable');
+        }
         return await this.employeesService.remove(id);
     }
+
+
 
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin')
@@ -104,7 +122,9 @@ export class EmployeesController {
         description: 'Delete employee by id'
     })
     @ApiBearerAuth('JWT-auth')
-    async delete(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
+    async delete(
+        @Param('id', new ParseIntPipe()) id: number
+    ): Promise<any> {
         return await this.employeesService.delete(id);
     }
 }

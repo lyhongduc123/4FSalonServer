@@ -1,5 +1,5 @@
 import { Appointment } from "src/modules/appointments/entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('services')
 export class Service {
@@ -26,6 +26,9 @@ export class Service {
 
     @DeleteDateColumn()
     deleteAt: Date;
+
+    @OneToMany(() => Appointment, (appointment) => appointment.service)
+    appointments: Appointment[]
 
     // @ManyToMany(() => Appointment, (appointment) => appointment.services)
     // appointments: Appointment[]

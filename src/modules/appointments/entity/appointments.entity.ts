@@ -12,9 +12,11 @@ import {
     JoinTable, 
     PrimaryGeneratedColumn, 
     UpdateDateColumn, 
-    RelationId
+    RelationId,
+    OneToOne
 } from "typeorm";
 import { Branch } from "src/modules/branches/entity";
+import { Feedback } from "src/modules/feedbacks/entity";
 
 @Entity('appointments')
 export class Appointment {
@@ -41,13 +43,19 @@ export class Appointment {
     status: string;
 
     @Column()
-    customer_id: number;
+    user_id: number;
 
     @Column()
     employee_id: number;
 
     @Column()
     branch_id: number;
+
+    @Column({ nullable: false })
+    service_id: number;
+
+    @Column({ nullable: true })
+    feedback_id: number;
 
     @CreateDateColumn()
     created_at: Date;
@@ -56,7 +64,7 @@ export class Appointment {
     updated_at: Date;
 
     @ManyToOne(() => Customer, (customer) => customer.appointments, { nullable: false })
-    @JoinColumn({ name: 'customer_id' })
+    @JoinColumn({ name: 'user_id' })
     customer: Customer;
 
     @ManyToOne(() => Employee, (employee) => employee.appointments, { nullable: false })
@@ -66,6 +74,14 @@ export class Appointment {
     @ManyToOne(() => Branch, (branch) => branch.appointments, { nullable: false })
     @JoinColumn({ name: 'branch_id' })
     branch: Branch;
+
+    @OneToOne(() => Feedback, (feedback) => feedback.appointment, { nullable: true })
+    @JoinColumn({ name: 'feedback_id' })
+    feedback: Feedback;
+
+    @ManyToOne(() => Service, (service) => service.appointments, { nullable: false })
+    @JoinColumn({ name: 'service_id' })
+    service: Service;
     
     // @ManyToMany(() => Service, (service) => service.appointments)
     // @JoinTable({

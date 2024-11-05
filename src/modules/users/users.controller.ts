@@ -79,7 +79,7 @@ export class UsersController {
         description: 'Get a list of users by search from the database'
     })
     async findBy(@Query() where: any): Promise<any[]> {
-        return await this.usersService.findBy(where);
+        return await this.usersService.findBy(where.relation, where);
     }
 
     @Get(':id')

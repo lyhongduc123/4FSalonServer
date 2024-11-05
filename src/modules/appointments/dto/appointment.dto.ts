@@ -48,7 +48,12 @@ export class CreateAppointmentDTO {
     branch_id: number;
 }
 
-export class UpdateAppointmentDTO extends PartialType(CreateAppointmentDTO) {}
+export class UpdateAppointmentDTO extends PartialType(CreateAppointmentDTO) {
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    @IsOptional()
+    feedback_id: number;
+}
 
 export class AppointmentStatusDTO {
     @ApiProperty()
@@ -57,59 +62,114 @@ export class AppointmentStatusDTO {
     status: string;
 }
 
+export class QueryAppointmentDTO {
+    @ApiProperty({ example: 1 })
+    @IsOptional()
+    id?: number;
+
+    @ApiProperty({ example: 'Appointment title' })
+    title?: string;
+
+    @ApiProperty({ example: 1 })
+    employee_id?: number;
+
+    @ApiProperty({ example: '2021-09-01T00:00:00.000Z' })
+    date?: Date;
+
+    @ApiProperty({ example: '2021-09-01T08:00:00.000Z' })
+    start_time?: Date;
+
+    @ApiProperty({ example: '2021-09-01T09:00:00.000Z' })
+    estimated_end_time?: Date;
+
+    @ApiProperty({ example: 'pending' })
+    status?: string;
+
+    @ApiProperty({ example: 1 })
+    user_id?: number;
+
+    @ApiProperty({ example: 1 })
+    service_id?: number;
+
+    @ApiProperty({ example: 1 })
+    branch_id?: number;
+
+    @ApiProperty({ example: 1 })
+    feedback_id?: number;
+
+    @ApiProperty({ example: '2021-09-01T00:00:00.000Z' })
+    created_at?: Date;
+
+    @ApiProperty({ example: '2021-09-01T00:00:00.000Z' })
+    updated_at?: Date;
+
+    @ApiProperty({ example: true })
+    have_feedback?: boolean;
+}
+
 export class AppointmentDTO {
     @ApiProperty({ example: 1 })
     @IsNumber()
     @IsOptional()
-    id: number;
+    id?: number;
 
     @ApiProperty({ example: 'Appointment title' })
     @IsString()
     @IsOptional()
-    title: string;
+    title?: string;
 
     @ApiProperty({ example: 1 })
     @IsNumber()
     @IsOptional()
-    employee_id: number;
+    employee_id?: number;
 
     @ApiProperty({ example: '2021-09-01T00:00:00.000Z' })
     @IsDateString()
     @IsOptional()
-    date: Date;
+    date?: Date;
 
     @ApiProperty({ example: '2021-09-01T08:00:00.000Z' })
     @IsDateString()
     @IsOptional()
-    start_time: Date;
+    start_time?: Date;
 
     @ApiProperty({ example: '2021-09-01T09:00:00.000Z' })
     @IsDateString()
     @IsOptional()
-    estimated_end_time: Date;
+    estimated_end_time?: Date;
 
     @ApiProperty({ example: 'pending' })
     @IsString()
     @IsOptional()
-    status: string;
+    status?: string;
 
     @ApiProperty({ example: 1 })
     @IsNumber()
     @IsOptional()
-    customer_id: number;
+    user_id?: number;
 
     @ApiProperty({ example: 1 })
     @IsNumber()
     @IsOptional()
-    service_id: number;
+    service_id?: number;
+
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    @IsOptional()
+    branch_id?: number;
+
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    @IsOptional()
+    feedback_id?: number;
 
     @ApiProperty({ example: '2021-09-01T00:00:00.000Z' })
     @IsDateString()
     @IsOptional()
-    created_at: Date;
+    created_at?: Date;
 
     @ApiProperty({ example: '2021-09-01T00:00:00.000Z' })
     @IsDateString()
     @IsOptional()
-    updated_at: Date;
+    updated_at?: Date;
 }
