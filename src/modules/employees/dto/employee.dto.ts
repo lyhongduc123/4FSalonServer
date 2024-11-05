@@ -52,3 +52,15 @@ export class CreateEmployeeDTO {
 }
 
 export class UpdateEmployeeDTO extends PartialType(CreateEmployeeDTO) {}
+
+export class QueryEmployeeDTO {
+    id?: number;
+    name?: string;
+    email?: string;
+    phone?: string;
+    work_position?: string;
+    available_from?: string;
+    available_to?: string;
+    status?: boolean;
+    branch_id?: number;
+}

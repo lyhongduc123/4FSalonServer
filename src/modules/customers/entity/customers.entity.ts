@@ -40,6 +40,11 @@ export class Customer {
     })
     cancel_count: number;
 
+    @Column({
+        default: 0,
+    })
+    points: number;
+
     @Column()
     user_id: number;
 

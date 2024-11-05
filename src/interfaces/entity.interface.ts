@@ -4,7 +4,7 @@ export interface IEntity<Entity = any, Create = any, Update = any> {
 
     findOne(id: any): Promise<Entity>;
 
-    findBy(where: any): Promise<Entity[]>;
+    findBy(where: any, relation?: Boolean): Promise<Entity[]>;
 
     create(entity: Create, relations1?: any, relations2?: any): Promise<Entity>;
     

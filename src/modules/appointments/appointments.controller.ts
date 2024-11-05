@@ -1,22 +1,21 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { JwtAuthGuard, Roles, RolesGuard } from 'src/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AppointmentDTO, AppointmentStatusDTO, CreateAppointmentDTO, UpdateAppointmentDTO } from './dto';
+import { AppointmentDTO, AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, UpdateAppointmentDTO } from './dto';
 import { CustomersService } from '../customers/customers.service';
 import { EmployeesService } from '../employees/employees.service';
-import { Appointment } from './entity';
 
 @ApiTags('Appointments')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
+@Roles('admin', 'manager')
 @ApiBearerAuth('JWT-auth')
 @Controller('api/appointments')
 export class AppointmentsController {
     constructor(
         private appointmentsService: AppointmentsService,
         private customersService: CustomersService,
-        private employeesService: EmployeesService
+        private employeesService: EmployeesService,
     ) {}
 
     @Get()
@@ -24,8 +23,18 @@ export class AppointmentsController {
         summary: 'Get all appointments',
         description: 'Get all appointments from the database * Requires Admin Role *'
     })
-    async findAll(): Promise<any[]> {
+    async findAll(@Req() req: any): Promise<any[]> {
         return await this.appointmentsService.findAll();
+    }
+
+    @Roles('admin', 'manager', 'customer')
+    @Get('search')
+    @ApiOperation({
+        summary: 'Search appointments',
+        description: 'Search appointments in the database * Requires logged in *'
+    })
+    async findBy(@Query() where: QueryAppointmentDTO): Promise<any[]> {
+        return await this.appointmentsService.findBy(where);
     }
 
     @Get(':id')
@@ -39,18 +48,7 @@ export class AppointmentsController {
         return await this.appointmentsService.findOne(id);
     }
 
-    @Roles('customer')
-    @Get('search')
-    @ApiOperation({
-        summary: 'Search appointments',
-        description: 'Search appointments in the database * Requires logged in *'
-    })
-    @ApiBody({ type: AppointmentDTO })
-    async findBy(@Body() where: any): Promise<any[]> {
-        return await this.appointmentsService.findBy(where);
-    }
-
-    @Roles('customer')
+    @Roles('admin', 'manager', 'customer')
     @Post()
     @ApiOperation({
         summary: 'Create an appointment',
@@ -79,7 +77,7 @@ export class AppointmentsController {
         return await this.appointmentsService.create(appointment, customer[0], employee[0]);;
     }
 
-    @Roles('customer')
+    @Roles('admin', 'manager', 'customer')
     @Put(':id')
     @ApiOperation({
         summary: 'Update an appointment',
