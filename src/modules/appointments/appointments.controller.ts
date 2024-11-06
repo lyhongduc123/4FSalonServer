@@ -55,26 +55,7 @@ export class AppointmentsController {
         description: 'Create an appointment in the database * Requires logged in *'
     })
     async create(@Body() appointment: CreateAppointmentDTO): Promise<any> {
-        if (!appointment.user_id) {
-            throw new BadRequestException('User id not provided');
-        }
-        if (!appointment.employee_id) {
-            throw new BadRequestException('Employee id not provided');
-        }
-        const customer = await this.customersService.findBy({
-            user_id: appointment.user_id
-        });
-        if (!customer) {
-            throw new BadRequestException('Customer not found');
-        }
-        const employee = await this.employeesService.findBy({
-            id: appointment.employee_id
-        });
-        if (!employee) {
-            throw new BadRequestException('Employee not found');
-        }
-
-        return await this.appointmentsService.create(appointment, customer[0], employee[0]);;
+        return await this.appointmentsService.create(appointment);;
     }
 
     @Roles('admin', 'manager', 'customer')

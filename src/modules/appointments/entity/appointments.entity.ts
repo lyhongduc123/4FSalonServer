@@ -17,6 +17,7 @@ import {
 } from "typeorm";
 import { Branch } from "src/modules/branches/entity";
 import { Feedback } from "src/modules/feedbacks/entity";
+import { Exclude } from "class-transformer";
 
 @Entity('appointments')
 export class Appointment {
@@ -35,6 +36,9 @@ export class Appointment {
     @Column()
     estimated_end_time: Date;
 
+    @Column()
+    final_price: number;
+
     @Column({
         type: 'enum',
         enum: ['pending', 'confirmed', 'completed', 'cancelled'],
@@ -43,6 +47,7 @@ export class Appointment {
     status: string;
 
     @Column()
+    @RelationId((appointment: Appointment) => appointment.customer)
     user_id: number;
 
     @Column()
