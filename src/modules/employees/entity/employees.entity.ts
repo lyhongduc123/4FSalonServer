@@ -34,7 +34,7 @@ export class Employee {
     @Column()
     status: boolean;
 
-    @Column({ type: 'float' })
+    @Column({ type: 'float', nullable: true })
     overal_rating: number;
 
     @Column()
