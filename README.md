@@ -174,3 +174,4 @@ Feel free to submit a pull request or open an issue to suggest improvements or r
 
 This project is licensed under the GPL-3.0 License.
 ```
+>>>>>>> 38675488f604562b4bfcde3636e3ddfb67e66044
