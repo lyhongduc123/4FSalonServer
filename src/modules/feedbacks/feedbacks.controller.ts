@@ -3,7 +3,10 @@ import { AppointmentsService } from '../appointments/appointments.service';
 import { FeedbacksService } from './feedbacks.service';
 import { CreateFeedbackDTO } from './dto';
 import { JwtAuthGuard, RolesGuard } from './../../common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Feedbacks')
+@ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('feedbacks')
 export class FeedbacksController {

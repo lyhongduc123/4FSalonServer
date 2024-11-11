@@ -60,6 +60,11 @@ export class AppointmentStatusDTO {
     @IsString()
     @IsNotEmpty()
     status: string;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    final_price: number;
 }
 
 export class QueryAppointmentDTO {

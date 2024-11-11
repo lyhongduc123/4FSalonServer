@@ -1,10 +1,13 @@
-import { ApiProperty, ApiTags, PartialType } from '@nestjs/swagger';
+import { ApiProperty, ApiQuery, ApiTags, PartialType } from '@nestjs/swagger';
 import { 
     IsString, 
     IsNotEmpty, 
     IsNumber, 
     IsOptional
 } from 'class-validator';
+import { IQuery } from 'src/interfaces/query.interface';
+import { Customer } from 'src/modules/customers/entity';
+import { Employee } from '../entity';
 
 export class CreateEmployeeDTO {
     @ApiProperty({ example: 1 })
@@ -53,14 +56,58 @@ export class CreateEmployeeDTO {
 
 export class UpdateEmployeeDTO extends PartialType(CreateEmployeeDTO) {}
 
-export class QueryEmployeeDTO {
+
+class EmployeeDTO {
+    @ApiProperty({ required: false })
     id?: number;
+
+    @ApiProperty({ required: false })
     name?: string;
+
+    @ApiProperty({ required: false })
     email?: string;
+
+    @ApiProperty({ required: false })
     phone?: string;
+
+    @ApiProperty({ required: false })
     work_position?: string;
+
+    @ApiProperty({ required: false })
     available_from?: string;
+
+    @ApiProperty({ required: false})
     available_to?: string;
+
+    @ApiProperty({ description: 'true = working, false = not working', required: false })
     status?: boolean;
+
+    @ApiProperty({required: false })
     branch_id?: number;
+
+    @ApiProperty({required: false })
+    created_at?: number;
+
+    @ApiProperty({required: false })
+    updated_at?: number;
+}
+
+export class QueryEmployeeDTO implements IQuery {
+    @ApiProperty({ required: false })
+    select?: string;
+
+    @ApiProperty({ required: false })
+    relations?: boolean;
+
+    @ApiProperty({ required: false })
+    where?: EmployeeDTO;
+
+    @ApiProperty({ required: false })
+    skip?: number;
+
+    @ApiProperty({ required: false })
+    limit?: number;
+
+    @ApiProperty({ required: false })
+    page?: number;
 }

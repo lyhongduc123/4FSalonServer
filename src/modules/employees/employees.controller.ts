@@ -1,9 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, InternalServerErrorException, Param, ParseIntPipe, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, InternalServerErrorException, Param, ParseIntPipe, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard, Roles, RolesGuard } from './../../common';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { CreateEmployeeDTO, UpdateEmployeeDTO } from './dto';
+import { CreateEmployeeDTO, QueryEmployeeDTO, UpdateEmployeeDTO } from './dto';
 import { BranchesService } from '../branches/branches.service';
 import { Employee } from './entity';
 
@@ -29,8 +29,7 @@ export class EmployeesController {
         summary: 'Find employee by where clause', 
         description: 'Find list of employee by where clause'
     })
-    @ApiQuery({ name: 'where', required: false })
-    async findBy(@Req() where: any): Promise<any[]> {
+    async findBy(@Query() where: QueryEmployeeDTO): Promise<any[]> {
         return await this.employeesService.findBy(where);
     }
 

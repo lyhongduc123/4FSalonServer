@@ -22,7 +22,11 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
     }
 
     async findBy(where: any): Promise<Employee[]> {
-        return this.employeesRepository.findBy(where);
+        const relations = ['branch'];
+        return this.employeesRepository.find({
+            where: where,
+            relations: where.relations ? relations : [],
+        });
     }
 
     async create(employee: CreateEmployeeDTO, branch: Branch): Promise<Employee> {
