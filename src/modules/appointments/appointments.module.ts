@@ -14,5 +14,6 @@ import { EmployeesModule } from '../employees/employees.module';
   ],
   controllers: [AppointmentsController],
   providers: [AppointmentsService],
+  exports: [AppointmentsService],
 })
 export class AppointmentsModule {}

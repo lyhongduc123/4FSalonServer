@@ -45,12 +45,8 @@ export class AuthService {
         if (userExists instanceof Error) {
             throw new BadRequestException(userExists.message);
         }
-        if (userExists.role === 'admin') {
-            return this.generateJwt({
-                sub: userExists.id,
-                email: userExists.email,
-                role: 'customer',
-            });
+        if (userExists.role !== 'customer') {
+            throw new UnauthorizedException('Unauthorized');
         }
         return this.generateJwt({
             sub: userExists.id,

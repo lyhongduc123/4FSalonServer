@@ -67,7 +67,9 @@ export class UsersController {
                 points: customer[0].points,
                 avatar: user.picture_url,
                 isGoogleAccount: user.google_id ? true : false,
+                avatar_url: user.picture_url || 'https://www.gravatar.com/avatar/',
             }
+            delete user.password;
             return res
         }
         throw new BadRequestException('User not found');

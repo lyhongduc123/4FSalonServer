@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Feedback } from './entity';
 import { CreateFeedbackDTO, UpdateFeedbackDTO } from './dto';
 import { Appointment } from '../appointments/entity';
+import { ApiTags } from '@nestjs/swagger';
 
 @Injectable()
 export class FeedbacksService {
@@ -13,9 +14,56 @@ export class FeedbacksService {
     ) {}
 
     async findAll(): Promise<Feedback[]> {
+        const appointments = ['customer', 'employee', 'branch'];
+
         return this.feedbacksRepository.find({ 
-            select: ['id', 'branch_rating', 'branch_feedback', 'employee_rating', 'employee_feedback', 'overall_rating', 'appointment_id', 'created_at', 'updated_at', 'appointment'],
-            relations: ['appointment'] 
+            select: {
+                id: true,
+                branch_rating: true,
+                branch_feedback: true,
+                employee_rating: true,
+                employee_feedback: true,
+                overall_rating: true,
+                created_at: true,
+                updated_at: true,
+                appointment: {
+                    id: true,
+                    title: true,
+                    date: true,
+                    start_time: true,
+                    estimated_end_time: true,
+                    status: true,
+                    created_at: true,
+                    updated_at: true,
+                    customer: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                        points: true,
+                        user_id: true,
+                        booking_count: true,
+                        cancel_count: true,
+                    },
+                    employee: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                        created_at: true,
+                        updated_at: true,
+                    },
+                    branch: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                        created_at: true,
+                        updated_at: true,
+                }
+            },
+        },
+            relations: ['appointment', 'appointment.customer', 'appointment.employee', 'appointment.branch'] 
         });
     }
 
