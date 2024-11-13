@@ -37,7 +37,7 @@ export class AuthController {
 
     @Get('google/callback')
     @UseGuards(GoogleOauthGuard)
-    @Redirect('http://localhost:3000', HttpStatus.OK)
+    @Redirect(process.env.GOOGLE_REDIRECT_URL, HttpStatus.OK)
     async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
         const token = await this.authService.loginWithGoogle(req.body);
         
@@ -48,7 +48,7 @@ export class AuthController {
         })
 
         return {
-            url: 'http://localhost:8080',
+            url: process.env.GOOGLE_REDIRECT_URL,
             statusCode: HttpStatus.OK,
         };
     }
