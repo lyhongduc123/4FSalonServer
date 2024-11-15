@@ -27,6 +27,11 @@ export class CreateUserDTO {
     @IsString()
     @IsOptional()
     role?: string;
+
+    @ApiProperty({ example: 'https://example'})
+    @IsString()
+    @IsOptional()
+    picture_url?: string;
 }
 
 export class UpdateUserDTO extends PartialType(CreateUserDTO) {}

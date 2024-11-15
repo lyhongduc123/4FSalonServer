@@ -4,7 +4,11 @@ import { config } from 'dotenv';
 import { Inject } from '@nestjs/common';
 import { UsersService } from '../../users/users.service';
 import { Injectable } from '@nestjs/common';
-import { CreateUserDTO } from 'src/modules/users/dto';
+import { CreateUserDTO, CustomerUserDTO } from 'src/modules/users/dto';
+import { CustomersService } from 'src/modules/customers/customers.service';
+import { CreateCustomerDTO } from 'src/modules/customers/dto/customer.dto';
+import { register } from 'module';
+import { AuthService } from '../auth.service';
 
 config();
 
@@ -14,6 +18,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(
     @Inject(UsersService)
     private readonly usersService: UsersService,
+    @Inject(AuthService)
+    private readonly authServices: AuthService
   ) {
     super({
       clientID: process.env.GOOGLE_CLIENT_ID,
@@ -28,26 +34,25 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
     const userExists = await this.usersService.findOne(emails[0].value);
     if (userExists) {
-      userExists.google_id = profile.id;
-      this.usersService.update(userExists);
+      if (!userExists.google_id) {
+        userExists.picture_url = photos[0].value;
+        userExists.google_id = profile.id;
+        await this.usersService.update(userExists);
+      }
       return done(null, userExists);
     }
-    console.log(profile);
 
-    const user = {
+    const user: CustomerUserDTO = {
       email: emails[0].value,
+      phone: null,
+      password: null,
       name: `${name.givenName} ${name.familyName}`,
       google_id: profile.id,
       picture_url: photos[0].value,
+      role: 'customer',
     }
-    const newUser: CreateUserDTO = {
-      email: user.email,
-      password: null,
-      google_id: user.google_id,
-      role: null
-    };
-
-    this.usersService.create(newUser);
-    done(null, user);
+    const newUser = await this.authServices.registerWithGoogle(user);
+    
+    done(null, newUser);
   }
 }

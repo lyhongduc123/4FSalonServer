@@ -31,22 +31,25 @@ export class AuthController {
         summary: 'Google Auth',
         description: 'Google authentication'
     })
-    async googleAuth(@Req() req: Request): Promise<any> {
-        return this.authService.googleAuth(req);
+    async googleAuth(@Req() req: any): Promise<any> {
     }
 
     @Get('google/callback')
     @UseGuards(GoogleOauthGuard)
-    @Redirect(process.env.GOOGLE_REDIRECT_URL, HttpStatus.OK)
-    async googleAuthCallback(@Req() req: Request, @Res() res: Response) {
-        const token = await this.authService.loginWithGoogle(req.body);
+    async googleAuthCallback(@Req() req: any, @Res() res: any) {
+        const token = await this.authService.loginWithGoogle(req.user);
         
-        res.cookie('access_token', token, {
-            maxAge: 2592000000,
-            sameSite: true,
-            secure: false,
-        })
-
+        // res.cookie('access_token', token.access_token, {
+        //     maxAge: 2592000000,
+        //     sameSite: true,
+        //     secure: false,
+        // })
+        res.send(
+            `<script>
+                window.opener.postMessage({ access_token: ${JSON.stringify(token.access_token)}}, '*');
+                window.close();
+            </script>`
+        );
         return {
             url: process.env.GOOGLE_REDIRECT_URL,
             statusCode: HttpStatus.OK,
