@@ -5,12 +5,15 @@ import { CreateEmployeeDTO, UpdateEmployeeDTO } from './dto/employee.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Branch } from '../branches/entity';
+import { SchedulesService } from '../schedules/schedules.service';
+import { WorkingScheduleTemplateDTO } from '../schedules/dto';
 
 @Injectable()
 export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, UpdateEmployeeDTO> {
     constructor(
         @InjectRepository(Employee)
         private employeesRepository: Repository<Employee>,
+        private readonly schedulesService: SchedulesService,
     ) {}
 
     async findAll(): Promise<Employee[]> {
@@ -39,6 +42,21 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
             throw new Error('Employee already exists');
         }
         const newEmployee = this.employeesRepository.create({...employee, branch});
+        const insertedEmployee = await this.employeesRepository.save(newEmployee);
+
+        const workSchedule: WorkingScheduleTemplateDTO = {
+            employee_id: newEmployee.id,
+            monday: false, 
+            tuesday: false,
+            wednesday: false, 
+            thursday: false, 
+            friday: false, 
+            saturday: false, 
+            sunday: false
+        }
+
+        await this.schedulesService.createWorkingScheduleTemplate(workSchedule);
+
         return this.employeesRepository.save(newEmployee);
     }
 
@@ -56,6 +74,7 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
     }
 
     async remove(id: number): Promise<any> {
+        await this.schedulesService.deleteWorkingScheduleTemplate(id);
         return this.employeesRepository.softDelete({ id });
     }
 

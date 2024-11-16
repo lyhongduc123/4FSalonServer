@@ -5,7 +5,8 @@ import { JwtAuthGuard, Roles, RolesGuard } from './../../common';
 import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateEmployeeDTO, QueryEmployeeDTO, UpdateEmployeeDTO } from './dto';
 import { BranchesService } from '../branches/branches.service';
-import { Employee } from './entity';
+import { SchedulesService } from '../schedules/schedules.service';
+import { WorkingScheduleTemplateDTO } from '../schedules/dto';
 
 @ApiTags('Employees')
 @Controller('api/employees')

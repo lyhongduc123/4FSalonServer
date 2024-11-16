@@ -100,8 +100,8 @@ export class UsersController {
         summary: 'Create a user', 
         description: 'Create a user in the database'
     })
-    async create(@Body() createUserDto: CreateUserDTO): Promise<any> {
-        return await this.usersService.create(createUserDto);
+    async create(@Body() createUserDTO: CreateUserDTO): Promise<any> {
+        return await this.usersService.create(createUserDTO);
     }
 
     @Put(':id')

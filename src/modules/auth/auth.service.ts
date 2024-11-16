@@ -122,10 +122,10 @@ export class AuthService {
         }
     }
 
-    async changePassword(changePasswordDto: ChangePasswordDTO) {
-        const { oldPassword, newPassword } = changePasswordDto;
+    async changePassword(changePasswordDTO: ChangePasswordDTO) {
+        const { oldPassword, newPassword } = changePasswordDTO;
          
-        const user = await this.usersService.findOne(changePasswordDto.email);
+        const user = await this.usersService.findOne(changePasswordDTO.email);
         if (!user) {
             throw new NotFoundException('User not found');
         }
