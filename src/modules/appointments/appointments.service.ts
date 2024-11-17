@@ -83,6 +83,6 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
     }
 
     async remove(id: number): Promise<any> {
-        return this.appointmentsRepository.softDelete({ id });
+        return this.appointmentsRepository.delete({ id });
     }
 }
