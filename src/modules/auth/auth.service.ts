@@ -121,11 +121,22 @@ export class AuthService {
             throw new InternalServerErrorException('Error creating user');
         }
     }
-    
-    async changePassword(changePasswordDto: ChangePasswordDTO) {
-        const { oldPassword, newPassword } = changePasswordDto;
+
+    googleAuth(req: any) {
+        if (!req.user) {
+            return 'No user from google'
+        }
+        console.log(req.user);
+        return {
+            message: 'User information from google',
+            user: req.user
+        }
+    }
+
+    async changePassword(changePasswordDTO: ChangePasswordDTO) {
+        const { oldPassword, newPassword } = changePasswordDTO;
          
-        const user = await this.usersService.findOne(changePasswordDto.email);
+        const user = await this.usersService.findOne(changePasswordDTO.email);
         if (!user) {
             throw new NotFoundException('User not found');
         }
