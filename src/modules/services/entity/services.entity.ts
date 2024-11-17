@@ -19,13 +19,13 @@ export class Service {
     price: number;
 
     @CreateDateColumn()
-    createAt: Date;
+    created_at: Date;
 
     @UpdateDateColumn()
-    updateAt: Date;
+    updated_at: Date;
 
     @DeleteDateColumn()
-    deleteAt: Date;
+    deleted_at: Date;
 
     @OneToMany(() => Appointment, (appointment) => appointment.service)
     appointments: Appointment[]
