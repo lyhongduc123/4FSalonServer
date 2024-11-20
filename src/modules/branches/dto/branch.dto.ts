@@ -35,7 +35,7 @@ export class CreateBranchDTO {
     @IsNotEmpty()
     status: boolean;
 
-    @ApiProperty({ example: 1 })
+    @ApiProperty({ example: 1, description: 'Don\'t provide this field when creating a branch' })
     @IsNumber()
     @IsOptional()
     user_id?: number;

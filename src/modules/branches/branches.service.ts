@@ -4,12 +4,14 @@ import { Branch } from './entity';
 import { CreateBranchDTO, UpdateBranchDTO } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class BranchesService implements IEntity<Branch, CreateBranchDTO, UpdateBranchDTO> {
     constructor(
         @InjectRepository(Branch)
         private branchesRepository: Repository<Branch>,
+        private readonly usersService: UsersService
     ) {}
 
     async findAll(): Promise<Branch[]> {
@@ -29,7 +31,14 @@ export class BranchesService implements IEntity<Branch, CreateBranchDTO, UpdateB
         if (branchExist) {
             throw new Error('Branch already exist');
         }
-        const newBranch = this.branchesRepository.create(branch);
+        const userDTO = {
+            name: branch.name,
+            email: branch.email,
+            password: "123456",
+            role: "manager"
+        };
+        const user = await this.usersService.create(userDTO);
+        const newBranch = this.branchesRepository.create({...branch, user_id: user.id});
         return this.branchesRepository.save(newBranch);
     }
 
