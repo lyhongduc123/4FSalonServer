@@ -34,6 +34,7 @@ export class VouchersService {
                 start_date: true,
                 end_date: true,
                 branch_id: true,
+                updated_at: true,
                 created_at: true,
             },
             relations: [],

@@ -4,14 +4,11 @@ import {
     CreateDateColumn,
     Entity, 
     JoinColumn, 
-    ManyToOne, 
     ManyToMany, 
-    JoinTable, 
+    
     PrimaryGeneratedColumn, 
     UpdateDateColumn, 
-    RelationId,
-    OneToOne,
-    DeleteDateColumn
+
 } from "typeorm";
 
 
@@ -57,6 +54,9 @@ export class Voucher {
     @ManyToMany(() => Branch, (branch) => branch.vouchers, {nullable: true})
     @JoinColumn({name: 'branch_id'})
     branches: Branch[];
+
+    @UpdateDateColumn()
+    updated_at: Date;
 
     @CreateDateColumn()
     created_at: Date;
