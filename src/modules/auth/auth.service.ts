@@ -9,6 +9,7 @@ import { CreateCustomerDTO } from '../customers/dto/customer.dto';
 import { CustomersService } from '../customers/customers.service';
 import { Roles } from 'src/common';
 import { access } from 'fs';
+import { User } from '../users/entity';
 
 @Injectable()
 export class AuthService {
@@ -67,17 +68,27 @@ export class AuthService {
         });
     }
 
-    async registerWithGoogle(user: CreateUserDTO) {
+    async registerWithGoogle(user: CustomerUserDTO) {
+        user.id = null;
         try {
             const newUser = await this.usersService.create(user);
-            return this.generateJwt({
-                sub: newUser.id,
-                email: newUser.email,
-                user: newUser.role,
-            });
+            user.id = newUser.id;
         } catch (error) {
             throw new BadRequestException(error.message);
         }
+
+        if (!user.id) throw new InternalServerErrorException('Error creating user');
+        try {
+            const newCustomer = await this.customersService.create({
+                name: user.name,
+                email: user.email,
+                phone: user.phone,
+                user_id: user.id,
+            });
+        } catch (error) {
+            throw new InternalServerErrorException(error.message);
+        }
+        return user;
     }
 
     async register(user: CustomerUserDTO) {
