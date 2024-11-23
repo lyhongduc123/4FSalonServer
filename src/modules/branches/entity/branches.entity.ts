@@ -9,8 +9,10 @@ import {
     UpdateDateColumn, 
     OneToMany,
     OneToOne,
-    JoinColumn} from "typeorm";
+    JoinColumn,
+    ManyToMany} from "typeorm";
 import { Appointment } from "src/modules/appointments/entity";
+import { Voucher } from "src/modules/vouchers/entity";
 
 
 @Entity('branches')
@@ -54,6 +56,9 @@ export class Branch {
     @OneToMany(() => Appointment, (appointment) => appointment.branch)
     appointments: Appointment[];
    
+    @ManyToMany(() => Voucher, (voucher) => voucher.branches)
+    vouchers: Voucher[];
+
     @CreateDateColumn()
     created_at: Date;
 

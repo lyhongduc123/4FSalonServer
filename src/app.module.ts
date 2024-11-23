@@ -14,6 +14,7 @@ import { ServicesModule } from './modules/services/services.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
 import { SchedulesModule } from './modules/schedules/schedules.module';
+import { VouchersModule } from './modules/vouchers/vouchers.module';
 
 
 @Module({
@@ -28,6 +29,7 @@ import { SchedulesModule } from './modules/schedules/schedules.module';
     FeedbacksModule,
     AuthModule,
     SchedulesModule,
+    VouchersModule
   ],
   controllers: [AppController],
   providers: [AppService],
