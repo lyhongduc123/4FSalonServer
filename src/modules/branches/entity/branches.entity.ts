@@ -42,13 +42,7 @@ export class Branch {
         nullable: false
     })
     status: boolean;
-
-    @Column({ 
-        default: 2,
-        nullable: false, 
-    })
-    max_scheduled_appointments: number;
-
+    
     @Column()
     user_id: number;
 
