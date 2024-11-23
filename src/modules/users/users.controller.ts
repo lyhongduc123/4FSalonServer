@@ -131,8 +131,8 @@ export class UsersController {
         if (customer.length === 0) {
             throw new BadRequestException('User not found');
         }
-        
-        await this.customersService.update({ ...customer, ...user });
+
+        await this.customersService.update({ ...customer[0], ...user });
         await this.usersService.update({ id: req.user.id, email: user.email });
         return await this.profile(req);
     }
