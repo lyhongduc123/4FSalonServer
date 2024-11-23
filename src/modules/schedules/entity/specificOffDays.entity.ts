@@ -13,7 +13,7 @@ export class SpecificOffDays {
     @Column()
     date: Date;
 
-    @Column()
+    @Column({ nullable: true })
     reason: string;
 
     @CreateDateColumn()
