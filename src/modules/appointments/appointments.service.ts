@@ -53,7 +53,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
                 updated_at: true,
             },
             relations: relation,
-            where: where
+            where: where.where
         });
     }
 
