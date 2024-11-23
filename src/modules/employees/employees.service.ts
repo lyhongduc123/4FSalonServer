@@ -1,12 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { IEntity } from 'src/interfaces';
 import { Employee } from './entity';
-import { CreateEmployeeDTO, UpdateEmployeeDTO } from './dto/employee.dto';
+import { CreateEmployeeDTO, QueryEmployeeDTO, UpdateEmployeeDTO } from './dto/employee.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Branch } from '../branches/entity';
 import { SchedulesService } from '../schedules/schedules.service';
 import { WorkingScheduleTemplateDTO } from '../schedules/dto';
+import { AppointmentsService } from '../appointments/appointments.service';
 
 @Injectable()
 export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, UpdateEmployeeDTO> {
@@ -14,6 +15,7 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
         @InjectRepository(Employee)
         private employeesRepository: Repository<Employee>,
         private readonly schedulesService: SchedulesService,
+        private readonly appointmentsService: AppointmentsService
     ) {}
 
     async findAll(): Promise<Employee[]> {
@@ -25,12 +27,22 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
     }
 
     async findBy(where: any): Promise<Employee[]> {
-        const relations = ['branch'];
-        return this.employeesRepository.find({
-            where: where,
+        const relations = ['branch', 'workingScheduleTemplate'];
+
+        console.log('where', where.where);
+        const res = await this.employeesRepository.find({
+            where: where.where,
             relations: where.relations ? relations : [],
         });
+        return res;
     }
+
+    async getEmployeeAvailable(id: number, date: string): Promise<any> {
+        const f_date = new Date(date);
+        const appointments = await this.appointmentsService.findAvailable(id, f_date);
+        return appointments;
+    }
+  
 
     async create(employee: CreateEmployeeDTO, branch: Branch): Promise<Employee> {
         const employeeExists = await this.employeesRepository.findOneBy({

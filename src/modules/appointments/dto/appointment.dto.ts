@@ -87,6 +87,9 @@ export class QueryAppointmentDTO {
     @ApiProperty({ example: '2021-09-01T09:00:00.000Z' })
     estimated_end_time?: Date;
 
+    @ApiProperty({ example: '199000' })
+    final_price?: number;
+
     @ApiProperty({ example: 'pending' })
     status?: string;
 

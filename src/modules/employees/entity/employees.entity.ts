@@ -51,9 +51,9 @@ export class Employee {
     @OneToMany(() => Appointment, (appointment) => appointment.employee)
     appointments: Appointment[]
 
-    @OneToOne(() => Employee, employee => employee.specificOffDays)
+    @OneToOne(() => SpecificOffDays, (specificOffDays) => specificOffDays.employee)
     specificOffDays: SpecificOffDays;
 
-    @OneToOne(() => Employee, employee => employee.workingScheduleTemplate)
+    @OneToOne(() => WorkingScheduleTemplate, (workingScheduleTemplate) => workingScheduleTemplate.employee)
     workingScheduleTemplate: WorkingScheduleTemplate;
 }
