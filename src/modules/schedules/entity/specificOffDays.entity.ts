@@ -22,7 +22,7 @@ export class SpecificOffDays {
     @DeleteDateColumn()
     deleted_at: Date;
 
-    @OneToOne(() => Employee, employee => employee.specificOffDays)
+    @OneToOne(() => Employee, (employee) => employee.specificOffDays)
     @JoinColumn({ name: 'employee_id' })
     employee: Employee;
 }

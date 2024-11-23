@@ -45,6 +45,18 @@ export class EmployeesController {
         return await this.employeesService.findOne(id);
     }
 
+    @Get(':id/available/:date')
+    @ApiOperation({
+        summary: 'Get available employees',
+        description: 'Get available employees'
+    })
+    async getEmployeeAvailable(
+        @Param('id', new ParseIntPipe()) id: number,
+        @Param('date') date: string
+    ): Promise<any> {
+        return await this.employeesService.getEmployeeAvailable(id, date);
+    }
+
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles('admin', 'manager')
     @Post()

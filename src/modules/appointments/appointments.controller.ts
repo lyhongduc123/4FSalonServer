@@ -14,8 +14,6 @@ import { EmployeesService } from '../employees/employees.service';
 export class AppointmentsController {
     constructor(
         private appointmentsService: AppointmentsService,
-        private customersService: CustomersService,
-        private employeesService: EmployeesService,
     ) {}
 
     @Get()
