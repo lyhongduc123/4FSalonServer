@@ -1,16 +1,16 @@
 import { Delete } from "@nestjs/common";
 import { Employee } from "src/modules/employees/entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity('specific_off_days')
 export class SpecificOffDays {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
+    @PrimaryColumn()
     employee_id: number;
 
-    @Column()
+    @PrimaryColumn()
     date: Date;
 
     @Column({ nullable: true })
