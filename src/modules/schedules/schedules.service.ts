@@ -109,17 +109,17 @@ export class SchedulesService {
     }
 
     // Delete
-    async deleteSpecificOffDays(employee_id: number): Promise<any> {
-        if (!employee_id) {
-            throw new Error('Employee ID is required');
+    async deleteSpecificOffDays(id: number): Promise<any> {
+        if (!id) {
+            throw new Error('ID is required');
         }
-        return await this.specificOffDaysRepository.softDelete({ employee_id });
+        return await this.specificOffDaysRepository.softDelete({ id });
     }
 
-    async deleteWorkingScheduleTemplate(employee_id: number): Promise<any> {
-        if (!employee_id) {
-            throw new Error('Employee ID is required');
+    async deleteWorkingScheduleTemplate(id: number): Promise<any> {
+        if (!id) {
+            throw new Error('ID is required');
         }
-        return await this.workingScheduleTemplateRepository.softDelete({ employee_id });
+        return await this.workingScheduleTemplateRepository.softDelete({ id });
     }
 }
