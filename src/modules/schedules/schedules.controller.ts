@@ -65,7 +65,7 @@ export class SchedulesController {
         return await this.schedulesService.updateWorkingScheduleTemplate(updateWorkingScheduleTemplate);
     }
 
-    @Delete('specific-off-days')
+    @Delete('specific-off-days/:id')
     async deleteSpecificOffDays(
         @Param('id', new ParseIntPipe()) id: number,
     ) {

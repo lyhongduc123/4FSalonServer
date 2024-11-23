@@ -100,4 +100,7 @@ export class QueryEmployeeDTO implements IQuery {
 
     @ApiProperty({ required: false })
     page?: number;
+
+    @ApiProperty({ required: false })
+    checkWorkingSchedule?: boolean;
 }
