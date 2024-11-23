@@ -34,16 +34,6 @@ export class CreateEmployeeDTO {
     @IsNotEmpty()
     work_position: string;
 
-    @ApiProperty({ example: 'Monday' })
-    @IsString()
-    @IsNotEmpty()
-    available_from: string;
-
-    @ApiProperty({ example: 'Sunday' })
-    @IsString()
-    @IsNotEmpty()
-    available_to: string;
-
     @ApiProperty({ example: true, description: 'true = working, false = not working' })
     @IsNotEmpty()
     status: boolean;

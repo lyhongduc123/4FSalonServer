@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, RelationId, UpdateDateColumn } from "typeorm";
+import { AfterInsert, Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, RelationId, UpdateDateColumn } from "typeorm";
 import { Branch } from "../../branches/entity";
 import { Appointment } from "../../appointments/entity";
+import { SpecificOffDays, WorkingScheduleTemplate } from "../../schedules/entity";
 
 @Entity('employees')
 export class Employee {
@@ -26,12 +27,6 @@ export class Employee {
     work_position: string;
 
     @Column()
-    available_from: string;
-
-    @Column()
-    available_to: string;
-
-    @Column()
     status: boolean;
 
     @Column({ type: 'float', nullable: true })
@@ -55,4 +50,10 @@ export class Employee {
 
     @OneToMany(() => Appointment, (appointment) => appointment.employee)
     appointments: Appointment[]
+
+    @OneToOne(() => Employee, employee => employee.specificOffDays)
+    specificOffDays: SpecificOffDays;
+
+    @OneToOne(() => Employee, employee => employee.workingScheduleTemplate)
+    workingScheduleTemplate: WorkingScheduleTemplate;
 }

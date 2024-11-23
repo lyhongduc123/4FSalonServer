@@ -13,6 +13,7 @@ import { AppointmentsModule } from './modules/appointments/appointments.module';
 import { ServicesModule } from './modules/services/services.module';
 import { BranchesModule } from './modules/branches/branches.module';
 import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
+import { SchedulesModule } from './modules/schedules/schedules.module';
 
 
 @Module({
@@ -26,6 +27,7 @@ import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
     ServicesModule,
     FeedbacksModule,
     AuthModule,
+    SchedulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
