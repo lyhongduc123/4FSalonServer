@@ -29,9 +29,8 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
     async findBy(where: any): Promise<Employee[]> {
         const relations = ['branch', 'workingScheduleTemplate'];
 
-        console.log('where', where.where);
         const res = await this.employeesRepository.find({
-            where: where.where,
+            where,
             relations: where.relations ? relations : [],
         });
         return res;
