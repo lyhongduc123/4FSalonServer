@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
-import { IsDateString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsDate, IsDateString, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 
 
 export class SpecificOffDaysDTO {
@@ -10,7 +10,8 @@ export class SpecificOffDaysDTO {
 
     @ApiProperty({ example: '' })
     @IsDateString()
-    off_days: Date;
+    @IsNotEmpty()
+    date: Date;
 }
 
 export class UpdateSpecificOffDaysDTO extends PartialType(SpecificOffDaysDTO) {

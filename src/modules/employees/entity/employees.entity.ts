@@ -30,7 +30,16 @@ export class Employee {
     status: boolean;
 
     @Column({ type: 'float', nullable: true })
-    overal_rating: number;
+    overall_rating: number;
+
+    @Column()
+    number_of_ratings: number;
+
+    @Column()
+    big_avatar_url: string;
+
+    @Column()
+    small_avatar_url: string;
 
     @Column()
     branch_id: number;
@@ -51,9 +60,9 @@ export class Employee {
     @OneToMany(() => Appointment, (appointment) => appointment.employee)
     appointments: Appointment[]
 
-    @OneToOne(() => Employee, employee => employee.specificOffDays)
+    @OneToOne(() => SpecificOffDays, (specificOffDays) => specificOffDays.employee)
     specificOffDays: SpecificOffDays;
 
-    @OneToOne(() => Employee, employee => employee.workingScheduleTemplate)
+    @OneToOne(() => WorkingScheduleTemplate, (workingScheduleTemplate) => workingScheduleTemplate.employee)
     workingScheduleTemplate: WorkingScheduleTemplate;
 }

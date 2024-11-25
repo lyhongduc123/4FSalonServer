@@ -20,7 +20,33 @@ export class SchedulesService {
     }
 
     async findAllWorkingScheduleTemplates(): Promise<WorkingScheduleTemplate[]> {
-        return await this.workingScheduleTemplateRepository.find();
+        return await this.workingScheduleTemplateRepository.find({
+            relations: {
+                employee: {
+                    branch: true
+                }
+            },
+            select: {
+                id: true,
+                employee_id: true,
+                monday: true,
+                tuesday: true,
+                wednesday: true,
+                thursday: true,
+                friday: true,
+                saturday: true,
+                sunday: true,
+                employee: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    branch: {
+                        id: true,
+                        name: true
+                    }
+                }
+            }
+        });
     }
 
     async findSpecificOffDays(where: SpecificOffDays): Promise<SpecificOffDays[]> {
@@ -31,11 +57,11 @@ export class SchedulesService {
         });
     }
 
-    async findWorkingScheduleTemplate(where: WorkingScheduleTemplate): Promise<WorkingScheduleTemplate[]> {
+    async findWorkingScheduleTemplateByBranch(branch_id: number): Promise<WorkingScheduleTemplate[]> {
         return await this.workingScheduleTemplateRepository.find({ 
             select: [
                 'id', 
-                'employee_id', 
+                'employee_id',
                 'monday', 
                 'tuesday', 
                 'wednesday',
@@ -45,10 +71,24 @@ export class SchedulesService {
                 'sunday'
             ],
             relations: ['employee'],
-            where: where 
+            where: {
+                employee: {
+                    branch_id: branch_id
+                }
+            } 
         });
     }
 
+    async findSpecificOffDaysByBranch(branch_id: number): Promise<SpecificOffDays[]> {
+        return await this.specificOffDaysRepository.find({ 
+            relations: ['employee'],
+            where: {
+                employee: {
+                    branch_id: branch_id
+                }
+            } 
+        });
+    }
 
     // Create
     async createSpecificOffDays(data: SpecificOffDaysDTO): Promise<SpecificOffDays> {
@@ -69,17 +109,17 @@ export class SchedulesService {
     }
 
     // Delete
-    async deleteSpecificOffDays(employee_id: number): Promise<any> {
-        if (!employee_id) {
-            throw new Error('Employee ID is required');
+    async deleteSpecificOffDays(id: number): Promise<any> {
+        if (!id) {
+            throw new Error('ID is required');
         }
-        return await this.specificOffDaysRepository.softDelete({ employee_id });
+        return await this.specificOffDaysRepository.softDelete({ id });
     }
 
-    async deleteWorkingScheduleTemplate(employee_id: number): Promise<any> {
-        if (!employee_id) {
-            throw new Error('Employee ID is required');
+    async deleteWorkingScheduleTemplate(id: number): Promise<any> {
+        if (!id) {
+            throw new Error('ID is required');
         }
-        return await this.workingScheduleTemplateRepository.softDelete({ employee_id });
+        return await this.workingScheduleTemplateRepository.softDelete({ id });
     }
 }

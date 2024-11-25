@@ -125,16 +125,15 @@ export class UsersController {
     })
     async updateProfile(
         @Req() req: any,
-        @Body() user: { name: string, phone: string, picture_url: string }
+        @Body() user: { name: string, phone: string, email: string }
     ): Promise<any> {
-        if (req.user.role !== 'customer') {
-            throw new BadRequestException('Unavailable');
-        }
         const customer = await this.customersService.findBy({ user_id: req.user.id });
         if (customer.length === 0) {
             throw new BadRequestException('User not found');
         }
-        await this.customersService.update({ user_id: req.user.id, ...user });
+
+        await this.customersService.update({ ...customer[0], ...user });
+        await this.usersService.update({ id: req.user.id, email: user.email });
         return await this.profile(req);
     }
 

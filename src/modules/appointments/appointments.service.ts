@@ -53,8 +53,17 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
                 updated_at: true,
             },
             relations: relation,
-            where: where
+            where: where.where
         });
+    }
+
+    async findAvailable(employee_id: number, date: Date): Promise<any[]> {
+        const modifiedDate = date.toISOString().split('T')[0];
+        return this.appointmentsRepository.createQueryBuilder('appointment')
+        .select(['appointment.start_time', 'appointment.estimated_end_time'])
+        .where(`appointment.date BETWEEN '${ modifiedDate } 00:00:00' AND '${ modifiedDate } 23:59:59'`)
+        .andWhere('appointment.employee_id = :employee_id', { employee_id })
+        .getMany();
     }
 
     async create(appointment: CreateAppointmentDTO): Promise<Appointment> {

@@ -42,7 +42,7 @@ export class Branch {
         nullable: false
     })
     status: boolean;
-
+    
     @Column()
     user_id: number;
 

@@ -31,10 +31,18 @@ export class SchedulesController {
         return await this.schedulesService.findSpecificOffDays(query);
     }
 
-    @Get('search')
-    @ApiQuery({ name: 'where', required: false })
-    async findWorkingScheduleTemplate(@Query() query: WorkingScheduleTemplate) {
-        return await this.schedulesService.findWorkingScheduleTemplate(query);
+    @Get('branch/:branch_id')
+    async findWorkingScheduleTemplate(
+        @Param('branch_id', new ParseIntPipe()) branch_id: number
+    ) {
+        return await this.schedulesService.findWorkingScheduleTemplateByBranch(branch_id);
+    }
+
+    @Get('specific-off-days/branch/:branch_id')
+    async findSpecificOffDaysByBranch(
+        @Param('branch_id', new ParseIntPipe()) branch_id: number
+    ) {
+        return await this.schedulesService.findSpecificOffDaysByBranch(branch_id);
     }
 
     @Post('specific-off-days')
@@ -57,14 +65,14 @@ export class SchedulesController {
         return await this.schedulesService.updateWorkingScheduleTemplate(updateWorkingScheduleTemplate);
     }
 
-    @Delete('specific-off-days')
+    @Delete('specific-off-days/:id')
     async deleteSpecificOffDays(
         @Param('id', new ParseIntPipe()) id: number,
     ) {
         return await this.schedulesService.deleteSpecificOffDays(id);
     }
 
-    @Delete('delete')
+    @Delete(':id')
     async deleteWorkingScheduleTemplate(
         @Param('id', new ParseIntPipe()) id: number,
     ) {

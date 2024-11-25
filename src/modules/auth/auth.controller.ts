@@ -87,8 +87,8 @@ export class AuthController {
     @ApiNotFoundResponse({ description: 'User not found' })
     @ApiUnauthorizedResponse({ description: 'Invalid password' })
     @ApiResponse({ status: 200, description: 'Password changed successfully' })
-    async changePassword(@Body() changePasswordDTO: ChangePasswordDTO) {
-        return this.authService.changePassword(changePasswordDTO);
+    async changePassword(@Req() req: any, @Body() changePasswordDTO: ChangePasswordDTO) {
+        return this.authService.changePassword(req.user.id, changePasswordDTO);
     }
 
     @Post('forgot-password')

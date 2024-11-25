@@ -33,6 +33,14 @@ export class CreateEmployeeDTO {
     @IsString()
     @IsNotEmpty()
     work_position: string;
+    
+    @ApiProperty({ required: false })
+    @IsNotEmpty()
+    big_avatar_url?: string;
+
+    @ApiProperty({ required: false })
+    @IsNotEmpty()
+    small_avatar_url?: string;
 
     @ApiProperty({ example: true, description: 'true = working, false = not working' })
     @IsNotEmpty()
@@ -72,6 +80,15 @@ class EmployeeDTO {
     @ApiProperty({ description: 'true = working, false = not working', required: false })
     status?: boolean;
 
+    @ApiProperty({ required: false })
+    overall_rating?: number;
+
+    @ApiProperty({ required: false })
+    big_avatar_url?: string;
+
+    @ApiProperty({ required: false })
+    small_avatar_url?: string;
+
     @ApiProperty({required: false })
     branch_id?: number;
 
@@ -100,4 +117,7 @@ export class QueryEmployeeDTO implements IQuery {
 
     @ApiProperty({ required: false })
     page?: number;
+
+    @ApiProperty({ required: false })
+    checkWorkingSchedule?: boolean;
 }
