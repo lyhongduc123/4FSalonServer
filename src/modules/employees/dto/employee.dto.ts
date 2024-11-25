@@ -113,9 +113,6 @@ export class QueryEmployeeDTO implements IQuery {
     skip?: number;
 
     @ApiProperty({ required: false })
-    limit?: number;
-
-    @ApiProperty({ required: false })
     page?: number;
 
     @ApiProperty({ required: false })

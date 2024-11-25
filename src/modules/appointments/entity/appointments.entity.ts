@@ -81,7 +81,6 @@ export class Appointment {
     branch: Branch;
 
     @OneToOne(() => Feedback, (feedback) => feedback.appointment, { nullable: true })
-    @JoinColumn({ name: 'feedback_id' })
     feedback: Feedback;
 
     @ManyToOne(() => Service, (service) => service.appointments, { nullable: false })

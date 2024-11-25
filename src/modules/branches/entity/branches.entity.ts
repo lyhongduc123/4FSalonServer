@@ -46,6 +46,9 @@ export class Branch {
     @Column()
     user_id: number;
 
+    @Column()
+    picture_url: string;
+
     @OneToOne(() => User, (user) => user.id)
     @JoinColumn({ name: 'user_id' })
     user: User;

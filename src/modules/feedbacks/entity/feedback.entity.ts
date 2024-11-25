@@ -1,5 +1,5 @@
 import { Appointment } from "./../../appointments/entity";
-import { Column, CreateDateColumn, Entity, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
 @Entity('feedbacks')
@@ -10,17 +10,20 @@ export class Feedback {
     @Column()
     branch_rating: number
 
-    @Column()
+    @Column({ nullable: true })
     branch_feedback: string
 
     @Column()
     employee_rating: number
 
-    @Column()
+    @Column({ nullable: true })
     employee_feedback: string
 
     @Column()
     overall_rating: number
+
+    @Column({ nullable: true })
+    suggestion: string
 
     @Column()
     appointment_id: number
@@ -32,5 +35,6 @@ export class Feedback {
     updated_at: Date
 
     @OneToOne(() => Appointment, appointment => appointment.feedback)
+    @JoinColumn({ name: 'appointment_id' })
     appointment: Appointment
 }

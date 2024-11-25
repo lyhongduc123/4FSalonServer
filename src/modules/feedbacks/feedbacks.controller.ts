@@ -8,7 +8,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('Feedbacks')
 @ApiBearerAuth('JWT-auth')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Controller('feedbacks')
+@Controller('api/feedbacks')
 export class FeedbacksController {
     constructor(
         private feedbacksService: FeedbacksService,
@@ -43,10 +43,8 @@ export class FeedbacksController {
     async create(@Body() feedback: CreateFeedbackDTO): Promise<any> {
         if (!feedback.appointment_id) {
             throw new BadRequestException('Appointment id not provided');
-        }
+        }   
         const newFeedback = await this.feedbacksService.create(feedback);
-        await this.appointmentsService.update({id: feedback.appointment_id, feedback_id: newFeedback.id});
-
         return newFeedback;
     }
 

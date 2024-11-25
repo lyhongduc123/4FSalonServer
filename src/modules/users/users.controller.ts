@@ -61,6 +61,7 @@ export class UsersController {
         if (customer.length > 0) {
             const user = await this.usersService.findOne(req.user.id);
             const res = {
+                id: user.id,
                 name: customer[0].name,
                 email: user.email,
                 phone: customer[0].phone,

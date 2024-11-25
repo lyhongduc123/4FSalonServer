@@ -76,6 +76,10 @@ export class FeedbacksService {
     }
 
     async create(createFeedbackDTO: CreateFeedbackDTO): Promise<Feedback> {
+        const feedbackExists = await this.findBy({ appointment_id: createFeedbackDTO.appointment_id });
+        if (feedbackExists.length > 0) {
+            throw new Error('Feedback already exists');
+        }
         return this.feedbacksRepository.save(createFeedbackDTO);
     }
 
