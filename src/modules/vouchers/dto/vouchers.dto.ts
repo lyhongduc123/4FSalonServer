@@ -4,35 +4,37 @@ import { Transform } from "class-transformer";
 
 
 export class QueryVoucherDTO {
-    @ApiProperty({ required: false, example: 1 })
+    @ApiProperty({ required: false })
     id?: number;
 
-    @ApiProperty({ required: false, example: 'DISC10' })
+    @ApiProperty({ required: false})
     code: string;
 
-    @ApiProperty({ required: false, example: '10% off on all services' })
+    @ApiProperty({ required: false})
     description: string;
 
-    @ApiProperty({ required: false, example: 'percentage' })
+    @ApiProperty({ required: false})
     discount_type: string;
 
-    @ApiProperty({ required: false, example: 10 })
+    @ApiProperty({ required: false})
     discount_value: number;
 
-    @ApiProperty({ required: false, example: 100 })
+    @ApiProperty({ required: false})
     price_threshold: number;
 
-    @ApiProperty({ required: false, example: 50 })
+    @ApiProperty({ required: false})
     required_point: number;
 
-    @ApiProperty({ required: false, example: '2024-11-01T00:00:00.000Z' })
+    @ApiProperty({ required: false })
+
+    @ApiProperty({ required: false })
     start_date: Date;
 
-    @ApiProperty({ required: false, example: '2024-12-31T00:00:00.000Z' })
+    @ApiProperty({ required: false })
     end_date: Date;
 
 
-    @ApiProperty({ required: false, example: 1 })
+    @ApiProperty({ required: false })
     branch_id: number;
 
     @ApiProperty({ required: false })

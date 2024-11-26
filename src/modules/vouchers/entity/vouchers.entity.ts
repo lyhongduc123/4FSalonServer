@@ -24,6 +24,9 @@ export class Voucher {
     @Column()
     description: string;
 
+    @Column()
+    imageUrl: string;
+
     @Column({
         type: 'enum',
         enum: ['percentage', 'fixed'],

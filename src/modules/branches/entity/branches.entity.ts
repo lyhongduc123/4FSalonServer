@@ -28,6 +28,9 @@ export class Branch {
     })
     address: string;
 
+    @Column()
+    imageUrl: string;
+
     @Column({
         nullable: true
     })

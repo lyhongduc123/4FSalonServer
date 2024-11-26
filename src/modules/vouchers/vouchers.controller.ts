@@ -25,7 +25,7 @@ export class VouchersController {
         summary: 'Get all vouchers',
         description: 'Get all vouchers from the database'
     })
-    async findAll(): Promise<any[]> {
+    async findAll(): Promise<QueryVoucherDTO[]> {
         return await this.vouchersService.findAll();
     }
 
