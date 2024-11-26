@@ -3,7 +3,7 @@ import { IEntity } from 'src/interfaces';
 import { Appointment } from './entity';
 import { AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, UpdateAppointmentDTO } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindOptionsOrder, Repository } from 'typeorm';
+import { Equal, FindOptionsOrder, In, Repository } from 'typeorm';
 
 @Injectable()
 export class AppointmentsService implements IEntity<Appointment, CreateAppointmentDTO, UpdateAppointmentDTO> {
@@ -70,14 +70,13 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
     async create(appointment: CreateAppointmentDTO): Promise<Appointment> {
         appointment.status = 'pending';
         appointment.id = null;
-        
-        const appointmentExist = await this.appointmentsRepository.find({
-            where: {
-                employee_id: Equal(appointment.employee_id),
-                date: Equal(appointment.date),
-                start_time: Equal(appointment.start_time),
-                branch_id: Equal(appointment.branch_id)
-            }
+
+        const appointmentExist = await this.appointmentsRepository.findOneBy({
+            employee_id: Equal(appointment.employee_id),
+            date: new Date(appointment.date),
+            start_time: new Date(appointment.start_time),
+            branch_id: Equal(appointment.branch_id),
+            status: In(['pending', 'confirmed'])
         })
 
         if (appointmentExist) throw new BadRequestException('Another appointment already exists at this time');

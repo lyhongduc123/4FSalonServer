@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { IsArray, IsDate, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
-import { Appointment } from "../entity";
+import { Appointment, AppointmentStatus } from "../entity";
 import { IQuery } from "src/interfaces/query.interface";
 
 export class CreateAppointmentDTO {
@@ -28,7 +28,7 @@ export class CreateAppointmentDTO {
     @ApiProperty({ example: 'pending' })
     @IsString()
     @IsOptional()
-    status: string;
+    status: AppointmentStatus;
 
     @ApiProperty({ example: 99000 })
     @IsNumber()
@@ -67,7 +67,7 @@ export class AppointmentStatusDTO {
     @ApiProperty({ enum: ['pending', 'completed', 'cancelled', 'confirmed'] })
     @IsString()
     @IsNotEmpty()
-    status: string;
+    status: AppointmentStatus;
 
     @ApiProperty()
     @IsNumber()

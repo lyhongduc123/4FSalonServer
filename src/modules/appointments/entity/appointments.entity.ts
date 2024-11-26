@@ -19,6 +19,8 @@ import { Branch } from "src/modules/branches/entity";
 import { Feedback } from "src/modules/feedbacks/entity";
 import { Exclude } from "class-transformer";
 
+export type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
+
 @Entity('appointments')
 export class Appointment {
     @PrimaryGeneratedColumn()
@@ -44,7 +46,7 @@ export class Appointment {
         enum: ['pending', 'confirmed', 'completed', 'cancelled'],
         default: 'pending'
     })
-    status: string;
+    status: AppointmentStatus;
 
     @Column()
     @RelationId((appointment: Appointment) => appointment.customer)
