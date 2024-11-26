@@ -18,6 +18,7 @@ import {
 import { Branch } from "src/modules/branches/entity";
 import { Feedback } from "src/modules/feedbacks/entity";
 import { Exclude } from "class-transformer";
+import { User } from "src/modules/users/entity";
 
 export type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
@@ -49,7 +50,7 @@ export class Appointment {
     status: AppointmentStatus;
 
     @Column()
-    @RelationId((appointment: Appointment) => appointment.customer)
+    @RelationId((appointment: Appointment) => appointment.user)
     user_id: number;
 
     @Column()
@@ -70,9 +71,9 @@ export class Appointment {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @ManyToOne(() => Customer, (customer) => customer.appointments, { nullable: false })
+    @ManyToOne(() => User, (user) => user.appointments, { nullable: false })
     @JoinColumn({ name: 'user_id' })
-    customer: Customer;
+    user: User;
 
     @ManyToOne(() => Employee, (employee) => employee.appointments, { nullable: false })
     @JoinColumn({ name: 'employee_id' })

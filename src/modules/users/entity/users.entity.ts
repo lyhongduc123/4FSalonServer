@@ -7,9 +7,11 @@ import {
     UpdateDateColumn,
     OneToOne,
     DeleteDateColumn,
+    OneToMany,
 } from 'typeorm';
 import { Customer } from '../../customers/entity';
 import { Branch } from '../../branches/entity';
+import { Appointment } from 'src/modules/appointments/entity';
 
 
 @Entity('users')
@@ -55,6 +57,9 @@ export class User {
 
     @OneToOne(() => Customer, (customer) => customer.user)
     customer: Customer;
+
+    @OneToMany(() => Appointment, (appointment) => appointment.user)
+    appointments: Appointment[];
 
     @OneToOne(() => Branch, (branch) => branch.user)
     branch: Branch;
