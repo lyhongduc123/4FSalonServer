@@ -41,6 +41,12 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
             relation = [...relation, 'feedback'];
             delete where.have_feedback
         }
+        const order = where.order;
+        const skip = where.skip;
+        const take = where.take;
+        delete where.order;
+        delete where.skip;
+        delete where.take;
 
         return this.appointmentsRepository.find({
             select: {
@@ -55,7 +61,9 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
             },
             where,
             relations: relation,
-            order: where.order === 'asc' ? { id: "ASC" } : { id: "DESC" }
+            order: order === 'asc' ? { id: "ASC" } : { id: "DESC" },
+            skip: skip,
+            take: take
         });
     }
 

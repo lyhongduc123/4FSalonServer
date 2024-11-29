@@ -5,6 +5,5 @@ export interface IQuery {
     order?: any;
     skip?: number;
     take?: number;
-    page?: number;
     select?: any;
 }

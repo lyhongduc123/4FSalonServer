@@ -89,12 +89,4 @@ export class Appointment {
     @ManyToOne(() => Service, (service) => service.appointments, { nullable: false })
     @JoinColumn({ name: 'service_id' })
     service: Service;
-    
-    // @ManyToMany(() => Service, (service) => service.appointments)
-    // @JoinTable({
-    //     name: 'appointment_services',
-    //     joinColumns: [{ name: 'appointment_id' }],
-    //     inverseJoinColumns: [{ name: 'service_id' }]
-    // })
-    // services: Service[]
 }

@@ -76,9 +76,53 @@ export class AppointmentStatusDTO {
     final_price: number;
 }
 
+class AppointmentDTO {
+    @ApiProperty({ required: false})
+    id: number;
+
+    @ApiProperty({ required: false})
+    title: string;
+
+    @ApiProperty({ required: false})
+    date: Date;
+
+    @ApiProperty({ required: false})
+    start_time: Date;
+
+    @ApiProperty({ required: false})
+    estimated_end_time: Date;
+
+    @ApiProperty({ required: false})
+    final_price: number;
+
+    @ApiProperty({ required: false})
+    status: AppointmentStatus;
+
+    @ApiProperty({ required: false})
+    user_id: number;
+
+    @ApiProperty({ required: false})
+    employee_id: number;
+
+    @ApiProperty({ required: false})
+    branch_id: number;
+
+    @ApiProperty({ required: false})
+    service_id: number;
+
+    @ApiProperty({ required: false})
+    feedback_id: number;
+
+    @ApiProperty({ required: false})
+    created_at: Date;
+
+    @ApiProperty({ required: false})
+    updated_at: Date;
+}
+
 export class QueryAppointmentDTO implements IQuery {
     @ApiProperty({ required: false })
-    where?: Appointment;
+    where?: AppointmentDTO;
 
     @ApiProperty({ required: false })
     order?: any;
@@ -88,9 +132,6 @@ export class QueryAppointmentDTO implements IQuery {
 
     @ApiProperty({ required: false })
     take?: number;
-
-    @ApiProperty({ required: false })
-    page?: number;
 
     @ApiProperty({ example: true })
     have_feedback?: boolean;

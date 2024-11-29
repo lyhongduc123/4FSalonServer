@@ -35,13 +35,12 @@ export class AppointmentsController {
         @Query() where: QueryAppointmentDTO
     ): Promise<any[]> {
         if (req.user.role === 'customer' && 
-            req.user.id !== where.where.user_id &&
-            where.where.user_id
+            req.query.user_id &&
+            req.user.id !== req.query.user_id 
         ) {
             throw new ForbiddenException('Not allowed!');
         }
-        const obj: Appointment = where.where;
-        console.log(obj);
+
         return await this.appointmentsService.findBy(where);
     }
 
