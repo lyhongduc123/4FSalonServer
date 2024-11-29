@@ -36,7 +36,7 @@ export class AppointmentsController {
     ): Promise<any[]> {
         if (req.user.role === 'customer' && 
             req.query.user_id &&
-            req.user.id !== req.query.user_id 
+            req.user.id !== parseInt(req.query.user_id)
         ) {
             throw new ForbiddenException('Not allowed!');
         }
