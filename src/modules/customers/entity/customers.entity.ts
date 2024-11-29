@@ -52,7 +52,6 @@ export class Customer {
     @JoinColumn({ name: 'user_id' })
     user: User;
 
-    // @OneToMany(() => Appointment, (appointment) => appointment.customer)
-    // @JoinColumn({ name: 'appointment_id' })
-    // appointments: Appointment[];
+    @OneToMany(() => Appointment, (appointment) => appointment.customer)
+    appointments: Appointment[];
 }

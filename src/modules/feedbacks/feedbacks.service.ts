@@ -35,12 +35,15 @@ export class FeedbacksService {
                     status: true,
                     created_at: true,
                     updated_at: true,
-                    user: {
+                    customer: {
                         id: true,
+                        name: true,
                         email: true,
-                        role: true,
-                        created_at: true,
-                        updated_at: true,
+                        phone: true,
+                        points: true,
+                        user_id: true,
+                        booking_count: true,
+                        cancel_count: true,
                     },
                     employee: {
                         id: true,

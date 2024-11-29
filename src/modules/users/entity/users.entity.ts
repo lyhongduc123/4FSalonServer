@@ -13,6 +13,7 @@ import { Customer } from '../../customers/entity';
 import { Branch } from '../../branches/entity';
 import { Appointment } from 'src/modules/appointments/entity';
 
+export type UserRole = 'customer' | 'manager' | 'admin';
 
 @Entity('users')
 export class User {
@@ -37,6 +38,7 @@ export class User {
 
     @Column({
         nullable: false,
+        enum: [('customer, manager, admin')],
         default: 'customer'
     })
     role: string;
@@ -57,9 +59,6 @@ export class User {
 
     @OneToOne(() => Customer, (customer) => customer.user)
     customer: Customer;
-
-    @OneToMany(() => Appointment, (appointment) => appointment.user)
-    appointments: Appointment[];
 
     @OneToOne(() => Branch, (branch) => branch.user)
     branch: Branch;

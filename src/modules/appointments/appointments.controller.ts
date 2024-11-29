@@ -3,8 +3,6 @@ import { AppointmentsService } from './appointments.service';
 import { JwtAuthGuard, Roles, RolesGuard } from 'src/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, UpdateAppointmentDTO } from './dto';
-import { CustomersService } from '../customers/customers.service';
-import { EmployeesService } from '../employees/employees.service';
 
 @ApiTags('Appointments')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -52,7 +50,10 @@ export class AppointmentsController {
         summary: 'Create an appointment',
         description: 'Create an appointment in the database * Requires logged in *'
     })
-    async create(@Body() appointment: CreateAppointmentDTO): Promise<any> {
+    async create(@Req() req: any, @Body() appointment: CreateAppointmentDTO): Promise<any> {
+        if (req.user.role === 'customer' && req.user.id !== appointment.user_id) {
+            throw new BadRequestException("Not valid to create appointment")
+        }
         return await this.appointmentsService.create(appointment);;
     }
 
@@ -64,11 +65,16 @@ export class AppointmentsController {
     })
     async update(
         @Param('id', new ParseIntPipe()) id: number, 
+        @Req() req: any,
         @Body() updateAppointmentDTO: UpdateAppointmentDTO
     ): Promise<any> {
         try {
             updateAppointmentDTO.id = id;
-            return await this.appointmentsService.update(updateAppointmentDTO);
+            if (req.user.role === 'customer') {
+                return await this.appointmentsService.updateSelf(req.user.id, updateAppointmentDTO);
+            } else {
+                return await this.appointmentsService.update(updateAppointmentDTO);
+            }
         } catch (error) {
             throw new BadRequestException(error.message);
         }

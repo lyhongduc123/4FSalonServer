@@ -50,7 +50,7 @@ export class Appointment {
     status: AppointmentStatus;
 
     @Column()
-    @RelationId((appointment: Appointment) => appointment.user)
+    @RelationId((appointment: Appointment) => appointment.customer)
     user_id: number;
 
     @Column()
@@ -71,9 +71,9 @@ export class Appointment {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @ManyToOne(() => User, (user) => user.appointments, { nullable: false })
-    @JoinColumn({ name: 'user_id' })
-    user: User;
+    @ManyToOne(() => Customer, (customer) => customer.appointments, { nullable: false })
+    @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
+    customer: Customer;
 
     @ManyToOne(() => Employee, (employee) => employee.appointments, { nullable: false })
     @JoinColumn({ name: 'employee_id' })

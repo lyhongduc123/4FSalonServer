@@ -95,6 +95,18 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
         return this.appointmentsRepository.save(oldAppointment);
     }
 
+    async updateSelf(user_id: number, appointment: UpdateAppointmentDTO): Promise<Appointment> {
+        if (!appointment.id) throw new Error('Id not provided');
+
+        let oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id: appointment.id });
+        if (!oldAppointment) throw new Error('Appointment not found');
+        if (oldAppointment.user_id !== user_id) throw new Error('Forbidden request');
+
+        oldAppointment = { ...oldAppointment, ...appointment};
+
+        return this.appointmentsRepository.save(oldAppointment)
+    }
+
     async patch(id: number, appointment: AppointmentStatusDTO): Promise<any> {
         if (!id) throw new Error('Id not provided');
         const oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id });
