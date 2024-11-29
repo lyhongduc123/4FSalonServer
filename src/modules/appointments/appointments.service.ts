@@ -35,12 +35,13 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
         });
     }
 
-    async findBy(where: QueryAppointmentDTO): Promise<Appointment[]> {
+    async findBy(where: any): Promise<Appointment[]> {
         let relation = ['customer', 'employee', 'service', 'branch'];
         if (where.have_feedback) {
             relation = [...relation, 'feedback'];
             delete where.have_feedback
         }
+
         return this.appointmentsRepository.find({
             select: {
                 id: true,
@@ -52,8 +53,8 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
                 created_at: true,
                 updated_at: true,
             },
+            where,
             relations: relation,
-            where: where.where,
             order: where.order === 'asc' ? { id: "ASC" } : { id: "DESC" }
         });
     }

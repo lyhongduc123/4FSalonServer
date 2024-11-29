@@ -1,8 +1,9 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { JwtAuthGuard, Roles, RolesGuard } from 'src/common';
 import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, UpdateAppointmentDTO } from './dto';
+import { Appointment } from './entity';
 
 @ApiTags('Appointments')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -29,7 +30,18 @@ export class AppointmentsController {
         summary: 'Search appointments',
         description: 'Search appointments in the database * Requires logged in *'
     })
-    async findBy(@Query() where: QueryAppointmentDTO): Promise<any[]> {
+    async findBy(
+        @Req() req: any,
+        @Query() where: QueryAppointmentDTO
+    ): Promise<any[]> {
+        if (req.user.role === 'customer' && 
+            req.user.id !== where.where.user_id &&
+            where.where.user_id
+        ) {
+            throw new ForbiddenException('Not allowed!');
+        }
+        const obj: Appointment = where.where;
+        console.log(obj);
         return await this.appointmentsService.findBy(where);
     }
 

@@ -2,6 +2,7 @@ import { ApiProperty, PartialType } from "@nestjs/swagger";
 import { IsArray, IsDate, IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { Appointment, AppointmentStatus } from "../entity";
 import { IQuery } from "src/interfaces/query.interface";
+import { Column } from "typeorm";
 
 export class CreateAppointmentDTO {
     @ApiProperty({ example: 1 })
