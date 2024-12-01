@@ -15,6 +15,7 @@ import { BranchesModule } from './modules/branches/branches.module';
 import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
 import { SchedulesModule } from './modules/schedules/schedules.module';
 import { VouchersModule } from './modules/vouchers/vouchers.module';
+import { StatsModule } from './modules/stats/stats.module';
 
 
 @Module({
@@ -29,7 +30,8 @@ import { VouchersModule } from './modules/vouchers/vouchers.module';
     FeedbacksModule,
     AuthModule,
     SchedulesModule,
-    VouchersModule
+    VouchersModule,
+    StatsModule
   ],
   controllers: [AppController],
   providers: [AppService],
