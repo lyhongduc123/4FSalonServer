@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Like, Repository } from 'typeorm';
 import { SpecificOffDays, WorkingScheduleTemplate } from './entity';
@@ -111,14 +111,14 @@ export class SchedulesService {
     // Delete
     async deleteSpecificOffDays(id: number): Promise<any> {
         if (!id) {
-            throw new Error('ID is required');
+            throw new BadRequestException('ID is required');
         }
         return await this.specificOffDaysRepository.softDelete({ id });
     }
 
     async deleteWorkingScheduleTemplate(id: number): Promise<any> {
         if (!id) {
-            throw new Error('ID is required');
+            throw new BadRequestException('ID is required');
         }
         return await this.workingScheduleTemplateRepository.softDelete({ id });
     }

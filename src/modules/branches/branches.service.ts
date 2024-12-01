@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { IEntity } from 'src/interfaces';
 import { Branch } from './entity';
 import { CreateBranchDTO, UpdateBranchDTO } from './dto';
@@ -11,7 +11,6 @@ export class BranchesService implements IEntity<Branch, CreateBranchDTO, UpdateB
     constructor(
         @InjectRepository(Branch)
         private branchesRepository: Repository<Branch>,
-        private readonly usersService: UsersService
     ) {}
 
     async findAll(): Promise<Branch[]> {
@@ -29,26 +28,19 @@ export class BranchesService implements IEntity<Branch, CreateBranchDTO, UpdateB
     async create(branch: CreateBranchDTO): Promise<Branch> {
         const branchExist = await this.branchesRepository.findOneBy(branch);
         if (branchExist) {
-            throw new Error('Branch already exist');
+            throw new ConflictException('Branch already exist');
         }
-        const userDTO = {
-            name: branch.name,
-            email: branch.email,
-            password: "123456",
-            role: "manager"
-        };
-        const user = await this.usersService.create(userDTO);
-        const newBranch = this.branchesRepository.create({...branch, user_id: user.id});
-        return this.branchesRepository.save(newBranch);
+        
+        return this.branchesRepository.save(branch);
     }
 
     async update(branch: UpdateBranchDTO): Promise<Branch> {
         if (!branch.id) {
-            throw new Error('Branch id is required');
+            throw new BadRequestException('Branch id is required');
         }
         const branchExist = await this.branchesRepository.findOneBy({ id: branch.id });
         if (!branchExist) {
-            throw new Error('Branch not found');
+            throw new NotFoundException('Branch not found');
         }
         return this.branchesRepository.save(branch);
     }

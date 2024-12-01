@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { IEntity } from 'src/interfaces';
 import { Appointment } from './entity';
 import { AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, UpdateAppointmentDTO } from './dto';
@@ -88,16 +88,16 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
             status: In(['pending', 'confirmed'])
         })
 
-        if (appointmentExist) throw new BadRequestException('Another appointment already exists at this time');
+        if (appointmentExist) throw new ConflictException('Another appointment already exists at this time');
         const newAppointment = await this.appointmentsRepository.save(appointment);
         return newAppointment;
     }
 
     async update(appointment: UpdateAppointmentDTO): Promise<Appointment> {
-        if (!appointment.id) throw new Error('Id not provided');
+        if (!appointment.id) throw new BadRequestException('Id not provided');
 
         let oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id: appointment.id });
-        if (!oldAppointment) throw new Error('Appointment not found');
+        if (!oldAppointment) throw new NotFoundException('Appointment not found');
 
         oldAppointment = { ...oldAppointment, ...appointment };
 
@@ -105,11 +105,11 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
     }
 
     async updateSelf(user_id: number, appointment: UpdateAppointmentDTO): Promise<Appointment> {
-        if (!appointment.id) throw new Error('Id not provided');
+        if (!appointment.id) throw new BadRequestException('Id not provided');
 
         let oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id: appointment.id });
-        if (!oldAppointment) throw new Error('Appointment not found');
-        if (oldAppointment.user_id !== user_id) throw new Error('Forbidden request');
+        if (!oldAppointment) throw new NotFoundException('Appointment not found');
+        if (oldAppointment.user_id !== user_id) throw new ForbiddenException('Forbidden request');
 
         oldAppointment = { ...oldAppointment, ...appointment};
 
@@ -117,9 +117,9 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
     }
 
     async patch(id: number, appointment: AppointmentStatusDTO): Promise<any> {
-        if (!id) throw new Error('Id not provided');
+        if (!id) throw new BadRequestException('Id not provided');
         const oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id });
-        if (!oldAppointment) throw new Error('Appointment not found');
+        if (!oldAppointment) throw new NotFoundException('Appointment not found');
 
         appointment = { ...oldAppointment, ...appointment };
         return this.appointmentsRepository.update(id, appointment);

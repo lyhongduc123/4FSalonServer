@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IEntity } from 'src/interfaces';
 import { Employee } from './entity';
 import { CreateEmployeeDTO, QueryEmployeeDTO, UpdateEmployeeDTO } from './dto/employee.dto';
@@ -50,7 +50,7 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
             name: employee.name,
         });  
         if (employeeExists) {
-            throw new Error('Employee already exists');
+            throw new ConflictException('Employee already exists');
         }
         const newEmployee = this.employeesRepository.create({...employee, branch});
         const insertedEmployee = await this.employeesRepository.save(newEmployee);
@@ -73,11 +73,11 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
 
     async update(employee: UpdateEmployeeDTO): Promise<Employee> {
         if (!employee.id) {
-            throw new Error('Id is required');
+            throw new BadRequestException('Id is required');
         }
         const employeeExist = await this.employeesRepository.findOneBy({ id: employee.id });
         if (!employeeExist) {
-            throw new Error('Employee not found');
+            throw new NotFoundException('Employee not found');
         }
         const updatedEmployee = this.employeesRepository.create(employee);
 

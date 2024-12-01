@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IEntity } from 'src/interfaces';
 import { Customer } from './entity';
@@ -32,7 +32,7 @@ export class CustomersService implements IEntity<Customer, CreateCustomerDTO, Up
             email: customer.email,
         });
         if (customerExists) {
-            throw new Error('Customer already exists');
+            throw new ConflictException('Customer already exists');
         }
         const newCustomer = this.customersRepository.create(customer);
         return this.customersRepository.save(newCustomer);
@@ -40,11 +40,11 @@ export class CustomersService implements IEntity<Customer, CreateCustomerDTO, Up
 
     async update(customer: UpdateCustomerDTO): Promise<Customer> {
         if (!customer.id) {
-            throw new Error('Id is required');
+            throw new BadRequestException('Id is required');
         }
         const customerExist = await this.customersRepository.findOneBy({ id: customer.id });
         if (!customerExist) {
-            throw new Error('Customer not found');
+            throw new NotFoundException('Customer not found');
         }
         return this.customersRepository.save(customer);
     }

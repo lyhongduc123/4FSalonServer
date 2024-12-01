@@ -10,7 +10,8 @@ import {
     OneToMany,
     OneToOne,
     JoinColumn,
-    ManyToMany} from "typeorm";
+    ManyToMany,
+    AfterInsert} from "typeorm";
 import { Appointment } from "src/modules/appointments/entity";
 import { Voucher } from "src/modules/vouchers/entity";
 
@@ -28,9 +29,6 @@ export class Branch {
     })
     address: string;
 
-    @Column()
-    imageUrl: string;
-
     @Column({
         nullable: true
     })
@@ -46,15 +44,10 @@ export class Branch {
     })
     status: boolean;
     
-    @Column()
-    user_id: number;
-
-    @Column()
+    @Column({
+        nullable: true
+    })
     picture_url: string;
-
-    @OneToOne(() => User, (user) => user.id)
-    @JoinColumn({ name: 'user_id' })
-    user: User;
 
     @OneToMany(() => Employee, (employee) => employee.branch)
     employees: Employee[];

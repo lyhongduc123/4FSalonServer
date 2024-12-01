@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, InternalServerErrorException, Param, ParseIntPipe, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, InternalServerErrorException, NotFoundException, Param, ParseIntPipe, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard, Roles, RolesGuard } from './../../common';
@@ -71,12 +71,9 @@ export class EmployeesController {
     })
     @ApiBearerAuth('JWT-auth')
     async create(@Req() req: any, @Body() employee: CreateEmployeeDTO): Promise<any> {
-        if (req.user.role === 'manager' && req.user.branch_id !== employee.branch_id) {
-            throw new BadRequestException('Unavailable');
-        }
         const branchExist = await this.branchesService.findOne(employee.branch_id);
         if (!branchExist) {
-            throw new BadRequestException('Branch not found');
+            throw new NotFoundException('Branch not found');
         }
         const newEmployee = await this.employeesService.create(employee, branchExist);
         return newEmployee;
@@ -95,9 +92,6 @@ export class EmployeesController {
         @Param('id', new ParseIntPipe()) id: number,
         @Body() employee: UpdateEmployeeDTO
     ): Promise<any> {
-        if (req.user.role === 'manager' && req.user.branch_id !== employee.branch_id) {
-           throw new BadRequestException('Unavailable');
-        }
         employee.id = id;
         return await this.employeesService.update(employee);
     }
@@ -116,10 +110,7 @@ export class EmployeesController {
     ): Promise<any> {
         const employee = await this.employeesService.findOne(id);
         if (!employee) {
-            throw new BadRequestException('Employee not found');
-        }
-        if (req.user.role === 'manager' && req.user.branch_id !== employee.branch_id) {
-            throw new BadRequestException('Unavailable');
+            throw new NotFoundException('Employee not found');
         }
         return await this.employeesService.remove(id);
     }

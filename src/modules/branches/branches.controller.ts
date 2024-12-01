@@ -47,7 +47,8 @@ export class BranchesController {
     })
     @ApiBearerAuth('JWT-auth')
     async create(@Body() branch: CreateBranchDTO): Promise<any> {
-        return await this.branchesService.create(branch);
+        const res = await this.branchesService.create(branch);
+        return res;
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)

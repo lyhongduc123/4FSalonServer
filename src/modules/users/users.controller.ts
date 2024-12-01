@@ -12,7 +12,8 @@ import {
     Put,
     Patch,
     BadRequestException,
-    Query
+    Query,
+    NotFoundException
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO, UpdateUserDTO } from './dto';
@@ -73,7 +74,7 @@ export class UsersController {
             delete user.password;
             return res
         }
-        throw new BadRequestException('User not found');
+        throw new NotFoundException('User not found');
     }
     
     @Get('search')
@@ -130,7 +131,7 @@ export class UsersController {
     ): Promise<any> {
         const customer = await this.customersService.findBy({ user_id: req.user.id });
         if (customer.length === 0) {
-            throw new BadRequestException('User not found');
+            throw new NotFoundException('User not found');
         }
 
         await this.customersService.update({ ...customer[0], ...user });

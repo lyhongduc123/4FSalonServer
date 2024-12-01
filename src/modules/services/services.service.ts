@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { Service } from './entity';
@@ -30,7 +30,7 @@ export class ServicesService implements IEntity<Service, CreateServiceDTO, Updat
             description: service.description,
         });
         if (serviceExists) {
-            throw new Error('Service already exists');
+            throw new ConflictException('Service already exists');
         }
         const newService = this.servicesRepository.create(service);
         return this.servicesRepository.save(newService);
@@ -38,11 +38,11 @@ export class ServicesService implements IEntity<Service, CreateServiceDTO, Updat
 
     async update(service: UpdateServiceDTO): Promise<Service> {
         if (!service.id) {
-            throw new Error('Missing service id');
+            throw new BadRequestException('Missing service id');
         }
         const serviceExists = await this.findOne(service.id);
         if (!serviceExists) {
-            throw new Error('Service not found');
+            throw new NotFoundException('Service not found');
         }
         return this.servicesRepository.save(service);
     }

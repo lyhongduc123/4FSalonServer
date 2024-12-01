@@ -59,7 +59,4 @@ export class User {
 
     @OneToOne(() => Customer, (customer) => customer.user)
     customer: Customer;
-
-    @OneToOne(() => Branch, (branch) => branch.user)
-    branch: Branch;
 }

@@ -7,11 +7,6 @@ import {
      IsNumber} from 'class-validator';
 
 export class CreateBranchDTO {
-    @ApiProperty({ example: 1 })
-    @IsNumber()
-    @IsOptional()
-    id?: number;
-
     @ApiProperty({ example: 'PC02' })
     @IsString()
     name: string;
@@ -35,10 +30,15 @@ export class CreateBranchDTO {
     @IsNotEmpty()
     status: boolean;
 
-    @ApiProperty({ example: 1, description: 'Don\'t provide this field when creating a branch' })
-    @IsNumber()
+    @ApiProperty()
+    @IsString()
     @IsOptional()
-    user_id?: number;
+    picture_url: string;
 }
 
-export class UpdateBranchDTO extends PartialType(CreateBranchDTO) {}
+export class UpdateBranchDTO extends PartialType(CreateBranchDTO) {
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    @IsOptional()
+    id?: number;
+}

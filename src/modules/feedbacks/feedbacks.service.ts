@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Feedback } from './entity';
@@ -78,7 +78,7 @@ export class FeedbacksService {
     async create(createFeedbackDTO: CreateFeedbackDTO): Promise<Feedback> {
         const feedbackExists = await this.findBy({ appointment_id: createFeedbackDTO.appointment_id });
         if (feedbackExists.length > 0) {
-            throw new Error('Feedback already exists');
+            throw new ConflictException('Feedback already exists');
         }
         return this.feedbacksRepository.save(createFeedbackDTO);
     }
@@ -86,7 +86,7 @@ export class FeedbacksService {
     async update(feedback: UpdateFeedbackDTO): Promise<Feedback> {
         let feedbackExists = await this.findOne(feedback.id);
         if (!feedbackExists) {
-            throw new Error('Feedback not found');
+            throw new NotFoundException('Feedback not found');
         }
         feedbackExists = { ...feedbackExists, ...feedback };
         return this.feedbacksRepository.save(feedbackExists);

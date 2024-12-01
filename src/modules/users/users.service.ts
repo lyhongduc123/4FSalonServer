@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { User } from './entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -37,8 +37,9 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
 
     async create(user: CreateUserDTO): Promise<User> {
         const userExists = await this.findOne(user.email);
+        
         if (userExists) {
-            throw new Error('User already exists');
+            throw new ConflictException('User already exists');
         }
         if (user.password !== undefined && user.password !== null && user.password !== '') {
             user.password = await this.hashPassword(user.password);
@@ -46,6 +47,7 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
         if (!user.role) {
             user.role = 'customer';
         }
+
         // Use save for return of the created user id
         const newUser = await this.usersRepository.save(user);
         delete newUser.password;
@@ -54,17 +56,17 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
 
     async update(user: UpdateUserDTO): Promise<User> {
         if (!user.id) {
-            throw new Error('Missing user id');
+            throw new BadRequestException('Missing user id');
         }
         const userExists = await this.findOne(user.id);
         if (!userExists) {
-            throw new Error('User not found');
+            throw new NotFoundException('User not found');
         }
         if (user.password !== undefined && user.password !== null && user.password !== '') {
             user.password = await this.hashPassword(user.password);
         }
         if (userExists.role === 'admin' && user.role !== 'admin') {
-            throw new Error('Admin role cannot be changed');
+            throw new ForbiddenException('Admin role cannot be changed');
         }
         const updatedUser = await this.usersRepository.save(user);
         delete updatedUser.password;
