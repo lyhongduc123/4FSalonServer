@@ -16,6 +16,9 @@ import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
 import { SchedulesModule } from './modules/schedules/schedules.module';
 import { VouchersModule } from './modules/vouchers/vouchers.module';
 import { StatsModule } from './modules/stats/stats.module';
+import { MailModule } from './modules/mail/mail.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import mailerConfig from './config/mailer.config';
 
 
 @Module({
@@ -31,7 +34,8 @@ import { StatsModule } from './modules/stats/stats.module';
     AuthModule,
     SchedulesModule,
     VouchersModule,
-    StatsModule
+    StatsModule,
+    MailModule
   ],
   controllers: [AppController],
   providers: [AppService],

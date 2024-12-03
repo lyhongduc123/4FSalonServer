@@ -38,12 +38,6 @@ export class AuthController {
     @UseGuards(GoogleOauthGuard)
     async googleAuthCallback(@Req() req: any, @Res() res: any) {
         const token = await this.authService.loginWithGoogle(req.user);
-        
-        // res.cookie('access_token', token.access_token, {
-        //     maxAge: 2592000000,
-        //     sameSite: true,
-        //     secure: false,
-        // })
         res.send(
             `<script>
                 window.opener.postMessage({ access_token: ${JSON.stringify(token.access_token)}}, '*');

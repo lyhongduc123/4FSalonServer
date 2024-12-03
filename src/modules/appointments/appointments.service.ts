@@ -4,12 +4,14 @@ import { Appointment } from './entity';
 import { AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, UpdateAppointmentDTO } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOptionsOrder, In, Repository } from 'typeorm';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AppointmentsService implements IEntity<Appointment, CreateAppointmentDTO, UpdateAppointmentDTO> {
     constructor(
         @InjectRepository(Appointment)
-        private appointmentsRepository: Repository<Appointment>
+        private appointmentsRepository: Repository<Appointment>,
+        private readonly mailService: MailService
     ) {}
 
     async findAll(): Promise<Appointment[]> {
@@ -112,17 +114,42 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
         if (oldAppointment.user_id !== user_id) throw new ForbiddenException('Forbidden request');
 
         oldAppointment = { ...oldAppointment, ...appointment};
+        const updatedAppointment = await this.appointmentsRepository.save(oldAppointment);
 
-        return this.appointmentsRepository.save(oldAppointment)
+        return updatedAppointment;
     }
 
     async patch(id: number, appointment: AppointmentStatusDTO): Promise<any> {
         if (!id) throw new BadRequestException('Id not provided');
-        const oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id });
+        const oldAppointment: Appointment = await this.findOne(id);
         if (!oldAppointment) throw new NotFoundException('Appointment not found');
 
         appointment = { ...oldAppointment, ...appointment };
-        return this.appointmentsRepository.update(id, appointment);
+        const res = await this.appointmentsRepository.update(id, appointment)
+
+        if (appointment.status === 'confirmed') {
+            await this.mailService.sendConfirmedAppointmentMail(
+                oldAppointment.customer.name,
+                oldAppointment.customer.email,
+                oldAppointment.date,
+                oldAppointment.start_time,
+                oldAppointment.service.title,
+                oldAppointment.branch.address,
+                oldAppointment.id
+            );
+        }
+        if (appointment.status === 'cancelled') {
+            await this.mailService.sendCancelledAppointmentMail(
+                oldAppointment.customer.name,
+                oldAppointment.customer.email,
+                oldAppointment.date,
+                oldAppointment.start_time,
+                oldAppointment.service.title,
+                oldAppointment.branch.address,
+                oldAppointment.id
+            );
+        }
+        return { message: `Appointment ${appointment.status} successfully` };
     }
 
     async remove(id: number): Promise<any> {

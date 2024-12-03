@@ -26,6 +26,7 @@ export class AuthService {
         }
 
         const user = await this.usersService.findOne(email);
+  
         if (!user) {
             return new Error('User not found');
         }

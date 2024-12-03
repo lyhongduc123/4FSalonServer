@@ -74,7 +74,7 @@ export class UsersController {
             delete user.password;
             return res
         }
-        throw new NotFoundException('User not found');
+        throw new NotFoundException('Failed to get user profile');
     }
     
     @Get('search')
