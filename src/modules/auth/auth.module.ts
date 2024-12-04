@@ -6,6 +6,7 @@ import { AuthService } from './auth.service';
 import { GoogleStrategy } from './strategy/google.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { CustomersModule } from '../customers/customers.module';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { CustomersModule } from '../customers/customers.module';
     }),
     UsersModule,
     CustomersModule,
+    MailModule
   ],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy, JwtStrategy],

@@ -88,6 +88,12 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
     }
 
     async comparePassword(password: string, hash: string): Promise<boolean> {
+        if (!password && !hash) {
+            return true;
+        }
+        if  (!password || !hash) {
+            return false;
+        }
         return bcrypt.compare(password, hash);
     }
 

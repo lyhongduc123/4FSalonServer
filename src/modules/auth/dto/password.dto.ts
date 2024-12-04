@@ -19,3 +19,16 @@ export class ForgotPasswordDTO {
     @IsEmail()
     email: string;
 }
+
+export class ResetPasswordDTO {
+    @ApiProperty({ example: "token" })
+    @IsString()
+    @IsNotEmpty()
+    token: string;
+
+    @ApiProperty({ example: "newpassword", minLength: 6 })
+    @IsString()
+    @MinLength(6)
+    @IsNotEmpty()
+    newPassword: string;
+}

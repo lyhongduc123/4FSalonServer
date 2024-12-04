@@ -31,15 +31,14 @@ export class MailService {
         });
     }
 
-    async sendResetPasswordMail(name: string, email: string, url_params: string): Promise<void> {
-        const url = process.env.FRONTEND_URL + "/reset-password?" + url_params;
+    async sendResetPasswordMail(email: string, token: string): Promise<void> {
+        const reset_link = process.env.FRONTEND_URL + "/reset-password?token=" + token;
         await this.mailer.sendMail({
             to: email,
             subject: 'Khôi phục mật khẩu tài khoản 4FSalon',
             template: 'reset-password',
             context: {
-                name,
-                url
+                reset_link
             }
         });
     }

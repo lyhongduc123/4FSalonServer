@@ -8,6 +8,7 @@ import { config } from 'dotenv';
 export type JwtPayload = {
     sub: string;
     email: string;
+    password: string;
     role: string;
 };
 
@@ -16,8 +17,7 @@ config();
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     constructor(
-        @Inject(UsersService)
-        private readonly usersService: UsersService,
+        private usersService: UsersService,
     ) {
         const extractJwtFromCookie = (req) => {
             let token = null;
@@ -36,6 +36,14 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
 
     async validate(payload: JwtPayload) {
+        const user = await this.usersService.findOne(payload.email);
+        if (!user) {
+            throw new UnauthorizedException('Invalid token');
+        }
+        
+        if (payload.password !== user.password) {
+            throw new UnauthorizedException('Invalid token');
+        }
         return {
             id: payload.sub,
             email: payload.email,

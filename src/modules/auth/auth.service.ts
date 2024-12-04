@@ -3,13 +3,10 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { CreateUserDTO, CustomerUserDTO } from '../users/dto';
 import { LoginDTO } from './dto/login.dto';
-import * as bcrypt from 'bcrypt';
-import { ChangePasswordDTO } from './dto';
+import { ChangePasswordDTO, ResetPasswordDTO } from './dto';
 import { CreateCustomerDTO } from '../customers/dto/customer.dto';
 import { CustomersService } from '../customers/customers.service';
-import { Roles } from 'src/common';
-import { access } from 'fs';
-import { User } from '../users/entity';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +14,8 @@ export class AuthService {
         private jwtService: JwtService,
         @Inject(UsersService)
         private readonly usersService: UsersService,
-        private readonly customersService: CustomersService
+        private readonly customersService: CustomersService,
+        private readonly mailService: MailService
     ) {}
 
     async validateUser(email: string, password: string): Promise<any> {
@@ -53,6 +51,7 @@ export class AuthService {
         return this.generateJwt({
             sub: userExists.id,
             email: userExists.email,
+            password: userExists.password,
             role: userExists.role,
         });
     }
@@ -65,6 +64,7 @@ export class AuthService {
         return this.generateJwt({
             sub: user.id,
             email: user.email,
+            password: user.password,
             role: user.role,
         });
     }
@@ -114,6 +114,7 @@ export class AuthService {
             return this.generateJwt ({
                 sub: newUser.id,
                 email: newUser.email,
+                password: newUser.password,
                 role: newUser.role
             })
         } catch (error) {
@@ -156,15 +157,33 @@ export class AuthService {
         const user = await this.usersService.findOne(email)
         
         if (user) {
-            this.generateJwt({
+            const token = await this.generateJwt({
                 sub: user.id,
                 email: user.email,
+                password: user.password,
                 role: user.role,
             });
-            await this.usersService.update(user);
+            await this.mailService.sendResetPasswordMail(user.email, token.access_token);
         }
 
         return { message: 'Password reset email sent.' };
+    }
+
+    async resetPassword(resetPasswordDTO: ResetPasswordDTO) {
+        const { token, newPassword } = resetPasswordDTO;
+        const payload = this.jwtService.verify(token);
+        const user = await this.usersService.findOne(payload.email);
+        const isPasswordValid = await this.usersService.comparePassword(payload.password, user.password);
+        if (!isPasswordValid) {
+            throw new BadRequestException('Invalid token');
+        }
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        user.password = newPassword;
+        await this.usersService.update(user);
+        return { message: 'Password reset successfully' };
     }
 
     async loginAdmin(user: LoginDTO) {
@@ -180,6 +199,7 @@ export class AuthService {
         return this.generateJwt({
             sub: userExists.id,
             email: userExists.email,
+            password: userExists.password,
             role: userExists.role,
         });
     }

@@ -7,7 +7,8 @@ import {
     UseGuards,
     Post,
     Body,
-    Redirect
+    Redirect,
+    Patch
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
@@ -16,7 +17,7 @@ import { JwtAuthGuard } from './../../common';
 import { Roles } from './../../common/decorators';
 import { RolesGuard } from './../../common/guards';
 import { CreateUserDTO, CustomerUserDTO } from '../users/dto';
-import { LoginDTO, ChangePasswordDTO, ForgotPasswordDTO } from './dto';
+import { LoginDTO, ChangePasswordDTO, ForgotPasswordDTO, ResetPasswordDTO } from './dto';
 import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiHeader, ApiHeaders, ApiInternalServerErrorResponse, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 
@@ -88,6 +89,11 @@ export class AuthController {
     @Post('forgot-password')
     async forgotPassword(@Body() forgotPasswordDTO: ForgotPasswordDTO) {
         return this.authService.forgotPassword(forgotPasswordDTO.email);
+    }
+
+    @Patch('reset-password')
+    async resetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
+        return this.authService.resetPassword(resetPasswordDTO);
     }
 
     @Post('login-admin')
