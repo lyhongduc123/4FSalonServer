@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, forwardRef, HttpStatus, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { IEntity } from 'src/interfaces';
 import { Employee } from './entity';
 import { CreateEmployeeDTO, QueryEmployeeDTO, UpdateEmployeeDTO } from './dto/employee.dto';
@@ -38,6 +38,14 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
 
     async getEmployeeAvailable(id: number, date: string): Promise<any> {
         const f_date = new Date(date);
+        const schedules = await this.schedulesService.findWorkingScheduleTemplateByEmployee(id);
+        const offday = await this.schedulesService.findSpecificOffDays({ employee_id: id, date: f_date });
+        if (!schedules) {
+            throw new BadRequestException('Employee not available');
+        }
+        if (offday || !schedules[f_date.getDay() + 2]) {
+            return { message: 'Employee is off on this day' };
+        }
         const appointments = await this.appointmentsService.findAvailable(id, f_date);
         return appointments;
     }

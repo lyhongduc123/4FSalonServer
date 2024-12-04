@@ -22,6 +22,7 @@ export class CustomersController {
         return await this.customersService.findAll();
     }
 
+    @Roles('admin')
     @Get(':id')
     @ApiOperation({
         summary: 'Get a customer',

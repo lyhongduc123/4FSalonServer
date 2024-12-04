@@ -48,6 +48,7 @@ export class ServicesService implements IEntity<Service, CreateServiceDTO, Updat
     }
 
     async remove(id: number): Promise<any> {
-        return this.servicesRepository.softDelete({ id });
+        await this.servicesRepository.softDelete({ id });
+        return 'Service has been deleted';
     }
 }

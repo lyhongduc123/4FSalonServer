@@ -14,8 +14,6 @@ export class FeedbacksService {
     ) {}
 
     async findAll(): Promise<Feedback[]> {
-        const appointments = ['customer', 'employee', 'branch'];
-
         return this.feedbacksRepository.find({ 
             select: {
                 id: true,
@@ -28,13 +26,7 @@ export class FeedbacksService {
                 updated_at: true,
                 appointment: {
                     id: true,
-                    title: true,
                     date: true,
-                    start_time: true,
-                    estimated_end_time: true,
-                    status: true,
-                    created_at: true,
-                    updated_at: true,
                     customer: {
                         id: true,
                         name: true,
@@ -48,31 +40,93 @@ export class FeedbacksService {
                     employee: {
                         id: true,
                         name: true,
-                        email: true,
-                        phone: true,
-                        created_at: true,
-                        updated_at: true,
                     },
                     branch: {
                         id: true,
                         name: true,
-                        email: true,
-                        phone: true,
-                        created_at: true,
-                        updated_at: true,
-                }
+                    }
+                },
             },
-        },
-            relations: ['appointment', 'appointment.customer', 'appointment.employee', 'appointment.branch'] 
+            relations: ['appointment', 'appointment.customer', 'appointment.employee', 'appointment.branch']
         });
     }
 
     async findOne(id: number): Promise<Feedback> {
-        return this.feedbacksRepository.findOne({ where: { id } });
+        return this.feedbacksRepository.findOne({
+            where: { id },
+            select: {
+                id: true,
+                branch_rating: true,
+                branch_feedback: true,
+                employee_rating: true,
+                employee_feedback: true,
+                overall_rating: true,
+                created_at: true,
+                updated_at: true,
+                appointment: {
+                    id: true,
+                    date: true,
+                    customer: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                        points: true,
+                        user_id: true,
+                        booking_count: true,
+                        cancel_count: true,
+                    },
+                    employee: {
+                        id: true,
+                        name: true,
+                    },
+                    branch: {
+                        id: true,
+                        name: true,
+                    }
+                },
+            },
+            relations: ['appointment', 'appointment.customer', 'appointment.employee', 'appointment.branch']
+        });
     }
 
     async findBy(where: any): Promise<Feedback[]> {
-        return this.feedbacksRepository.find({ where: where });
+        return this.feedbacksRepository.find({ 
+            where,
+            select: {
+                id: true,
+                branch_rating: true,
+                branch_feedback: true,
+                employee_rating: true,
+                employee_feedback: true,
+                overall_rating: true,
+                created_at: true,
+                updated_at: true,
+                appointment: {
+                    id: true,
+                    date: true,
+                    customer: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        phone: true,
+                        points: true,
+                        user_id: true,
+                        booking_count: true,
+                        cancel_count: true,
+                    },
+                    employee: {
+                        id: true,
+                        name: true,
+                    },
+                    branch: {
+                        id: true,
+                        name: true,
+                    }
+                },
+            },
+            relations: ['appointment', 'appointment.customer', 'appointment.employee', 'appointment.branch']
+        });
     }
 
     async create(createFeedbackDTO: CreateFeedbackDTO): Promise<Feedback> {
@@ -93,6 +147,6 @@ export class FeedbacksService {
     }
 
     async delete(id: number): Promise<any> {
-        return this.feedbacksRepository.delete(id);
+        return this.feedbacksRepository.softDelete(id);
     }
 }

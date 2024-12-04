@@ -162,10 +162,13 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
             case 'completed':
                 await this.customersService.incrementPoints(oldAppointment.user_id, Math.floor(oldAppointment.final_price / 100 * 5));
                 break;
+            case 'pending':
+                break;
             default:
-                return { message: 'Invalid status' };
+                throw new BadRequestException('Invalid status');
+                
         }
-        return { message: `Appointment ${appointment.status} successfully` };
+        return oldAppointment;
     }
 
     async remove(id: number): Promise<any> {

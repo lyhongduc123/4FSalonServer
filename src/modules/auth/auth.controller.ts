@@ -56,6 +56,7 @@ export class AuthController {
         summary: 'Register',
         description: 'Register a new user * can only be customer *'
     })
+    @ApiResponse({ status: 201, description: 'Return access token' })
     @ApiBadRequestResponse({ description: 'User already exists'})
     @ApiInternalServerErrorResponse({ description: 'Error creating user'})
     async register(@Body() customerUserDTO: CustomerUserDTO): Promise<any> {
@@ -87,11 +88,15 @@ export class AuthController {
     }
 
     @Post('forgot-password')
+    @ApiResponse({ status: 200, description: 'Password reset email sent.' })
     async forgotPassword(@Body() forgotPasswordDTO: ForgotPasswordDTO) {
         return this.authService.forgotPassword(forgotPasswordDTO.email);
     }
 
     @Patch('reset-password')
+    @ApiResponse({ status: 200, description: 'Password reset successfully + return access token' })
+    @ApiBadRequestResponse({ description: 'Invalid token' })
+    @ApiNotFoundResponse({ description: 'User not found' })
     async resetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
         return this.authService.resetPassword(resetPasswordDTO);
     }

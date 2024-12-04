@@ -49,7 +49,7 @@ export class SchedulesService {
         });
     }
 
-    async findSpecificOffDays(where: SpecificOffDays): Promise<SpecificOffDays[]> {
+    async findSpecificOffDays(where: any): Promise<SpecificOffDays[]> {
         return await this.specificOffDaysRepository.find({ 
             select: ['id', 'employee_id', 'date'],
             relations: ['employee'],
@@ -76,6 +76,27 @@ export class SchedulesService {
                     branch_id: branch_id
                 }
             } 
+        });
+    }
+    async findWorkingScheduleTemplateByEmployee(employee_id: number): Promise<WorkingScheduleTemplate[]> {
+        return await this.workingScheduleTemplateRepository.find({ 
+            select: [
+                'id', 
+                'employee_id',
+                'monday', 
+                'tuesday', 
+                'wednesday',
+                'thursday', 
+                'friday', 
+                'saturday', 
+                'sunday'
+            ],
+            relations: ['employee'],
+            where: {
+                employee: {
+                    id: employee_id
+                }
+            }
         });
     }
 

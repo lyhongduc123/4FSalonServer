@@ -20,7 +20,7 @@ import { CreateUserDTO, UpdateProfileDTO, UpdateUserDTO } from './dto';
 import { JwtAuthGuard } from './../../common';
 import { Roles } from './../../common/decorators';
 import { RolesGuard } from './../../common';
-import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from './entity';
 import { Request } from 'express';
 import { CustomersService } from '../customers/customers.service';
@@ -130,7 +130,11 @@ export class UsersController {
         summary: 'Update user profile', 
         description: 'Update user profile'
     })
+    @ApiResponse({ status: HttpStatus.OK, description: 'Return the updated user profile' })
+    @ApiBadRequestResponse({ description: 'Missing user id' })
+    @ApiForbiddenResponse({ description: 'Forbidden request' })
     @ApiNotFoundResponse({ description: 'User not found' })
+    @ApiNotFoundResponse({ description: 'Customer not found' })
     async updateProfile(
         @Req() req: any,
         @Body() user: UpdateProfileDTO
@@ -149,9 +153,12 @@ export class UsersController {
         summary: 'Delete a user', 
         description: 'Delete a user in the database'
     })
+    @ApiResponse({status: 200, description: 'User deleted' })
     async remove(
         @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
+        if (!id) throw new BadRequestException('Missing user id');
+        if (id === 1) throw new BadRequestException('Cannot delete the main admin');
         return await this.usersService.remove(id);
     }
 }

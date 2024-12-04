@@ -1,8 +1,8 @@
-import { Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards, Body } from '@nestjs/common';
+import { Controller, Delete, Get, HttpStatus, Param, ParseIntPipe, Post, Put, UseGuards, Body, BadRequestException } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import { JwtAuthGuard, RolesGuard, Roles } from './../../common';
 import { CreateServiceDTO, UpdateServiceDTO } from './dto';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiConflictResponse, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Services')
 @Controller('api/services')
@@ -46,6 +46,8 @@ export class ServicesController {
         description: 'Create a service in the database'
     })
     @ApiBearerAuth('JWT-auth')
+    @ApiResponse({ status: HttpStatus.CREATED, description: 'Service has been created' })
+    @ApiConflictResponse({ description: 'Service already exists' })
     async create(@Body() createServiceDTO: CreateServiceDTO): Promise<any> {
         return await this.servicesService.create(createServiceDTO);
     }
@@ -58,6 +60,9 @@ export class ServicesController {
         description: 'Update a service in the database'
     })
     @ApiBearerAuth('JWT-auth')
+    @ApiResponse({ status: HttpStatus.OK, description: 'Return updated service' })
+    @ApiBadRequestResponse({ description: 'Missing service id' })
+    @ApiNotFoundResponse({ description: 'Service not found' })
     async update(
         @Param('id', new ParseIntPipe()) id: number,
         @Body() updateServiceDTO: UpdateServiceDTO
@@ -74,7 +79,10 @@ export class ServicesController {
         description: 'Delete a service in the database'
     })
     @ApiBearerAuth('JWT-auth')
+    @ApiResponse({ status: HttpStatus.OK, description: 'Service has been deleted' })
+    @ApiBadRequestResponse({ description: 'Missing service id' })
     async remove(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
+        if (!id) throw new BadRequestException('Missing service id');
         return await this.servicesService.remove(id);
     }
 }

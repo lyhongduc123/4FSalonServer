@@ -183,7 +183,16 @@ export class AuthService {
 
         user.password = newPassword;
         await this.usersService.update(user);
-        return { message: 'Password reset successfully' };
+        const newToken = await this.generateJwt({
+            sub: user.id,
+            email: user.email,
+            password: user.password,
+            role: user.role,
+        });
+        return { 
+            message: 'Password reset successfully',
+            token: newToken.access_token
+        };
     }
 
     async loginAdmin(user: LoginDTO) {

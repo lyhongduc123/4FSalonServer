@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Delete, Get, HttpStatus, Interna
 import { EmployeesService } from './employees.service';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard, Roles, RolesGuard } from './../../common';
-import { ApiBearerAuth, ApiBody, ApiHeader, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiConflictResponse, ApiHeader, ApiNoContentResponse, ApiNotFoundResponse, ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiResponseProperty, ApiTags } from '@nestjs/swagger';
 import { CreateEmployeeDTO, QueryEmployeeDTO, UpdateEmployeeDTO } from './dto';
 import { BranchesService } from '../branches/branches.service';
 import { SchedulesService } from '../schedules/schedules.service';
@@ -47,9 +47,14 @@ export class EmployeesController {
 
     @Get(':id/available/:date')
     @ApiOperation({
-        summary: 'Get available employees',
-        description: 'Get available employees'
+        summary: 'Get employee\'s available',
+        description: 'Get employee\'s available status by id and date'
     })
+    @ApiResponse({ 
+        status: 200, 
+        description: 'Return employee list of occupied time slots or message if employee is off on this day',
+    })
+    @ApiBadRequestResponse({ description: 'Employee not available' })
     async getEmployeeAvailable(
         @Param('id', new ParseIntPipe()) id: number,
         @Param('date') date: string
@@ -64,12 +69,10 @@ export class EmployeesController {
         summary: 'Create employee',
         description: 'Create employee'
     })
-    @ApiHeader({
-        name: 'manager_branch_id',
-        description: 'Manager can only create employee in his branch',
-        required: false
-    })
     @ApiBearerAuth('JWT-auth')
+    @ApiResponse({ status: 201, description: 'Return created employee' })
+    @ApiNotFoundResponse({ description: 'Branch not found' })
+    @ApiConflictResponse({ description: 'Employee already exists' })
     async create(@Req() req: any, @Body() employee: CreateEmployeeDTO): Promise<any> {
         const branchExist = await this.branchesService.findOne(employee.branch_id);
         if (!branchExist) {
@@ -87,8 +90,10 @@ export class EmployeesController {
         description: 'Update employee by id'
     })
     @ApiBearerAuth('JWT-auth')
+    @ApiResponse({ status: 200, description: 'Return updated employee' })
+    @ApiNotFoundResponse({ description: 'Employee not found' })
+    @ApiBadRequestResponse({ description: 'Id is required' })
     async update(
-        @Req() req: any,
         @Param('id', new ParseIntPipe()) id: number,
         @Body() employee: UpdateEmployeeDTO
     ): Promise<any> {
@@ -104,15 +109,19 @@ export class EmployeesController {
         description: 'Delete employee by id'
     })
     @ApiBearerAuth('JWT-auth')
+    @ApiResponse({ status: 200, description: 'Return message of success' })
+    @ApiNotFoundResponse({ description: 'Employee not found' })
+    @ApiBadRequestResponse({ description: 'ID is required' })
     async remove(
-        @Req() req: any,
         @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
+        if (!id) throw new BadRequestException('ID is required');
         const employee = await this.employeesService.findOne(id);
         if (!employee) {
             throw new NotFoundException('Employee not found');
         }
-        return await this.employeesService.remove(id);
+        await this.employeesService.remove(id)
+        return { message: 'Employee deleted successfully' };
     }
 
 
@@ -121,13 +130,22 @@ export class EmployeesController {
     @Roles('admin')
     @Delete(':id')
     @ApiOperation({
-        summary: 'Delete employee',
+        summary: 'Delete employee (admin only)',
         description: 'Delete employee by id'
     })
     @ApiBearerAuth('JWT-auth')
+    @ApiResponse({ status: 200, description: 'Return message of success' })
+    @ApiNotFoundResponse({ description: 'Employee not found' })
+    @ApiBadRequestResponse({ description: 'ID is required' })
     async delete(
         @Param('id', new ParseIntPipe()) id: number
     ): Promise<any> {
-        return await this.employeesService.delete(id);
+        if (!id) throw new BadRequestException('ID is required');
+        const employee = await this.employeesService.findOne(id);
+        if (!employee) {
+            throw new NotFoundException('Employee not found');
+        }
+        await this.employeesService.delete(id);
+        return { message: 'Employee deleted successfully' };
     }
 }
