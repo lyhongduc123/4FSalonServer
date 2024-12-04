@@ -7,4 +7,12 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
+
+  async sendMail() {
+    await this.mailerService.sendMail({
+      to: '22021217@vnu.edu.vn',
+      subject: 'Test Mail',
+      text: 'Test Mail',
+    });
+  }
 }

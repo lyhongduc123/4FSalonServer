@@ -100,4 +100,13 @@ export class MailService {
             }
         });
     }
+
+    async sendMail(context: {to: string, subject: string, text: string}): Promise<void> {
+        await this.mailer.sendMail({
+            to: context.to,
+            subject: context.subject,
+            template: 'mail',
+            text: context.text
+        });
+    }
 }
