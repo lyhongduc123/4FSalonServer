@@ -48,7 +48,7 @@ npm install
 3. Create a `.env` file in the `frontend` folder and add the following environment variables:
 
 ```bash
-REACT_APP_API_URL=http://localhost:3000/api
+REACT_APP_API_URL=http://localhost:8080/api
 REACT_APP_GOOGLE_CLIENT_ID=<your_google_client_id>
 ```
 
@@ -76,7 +76,7 @@ By default, the frontend will run on Vite default.
 
 ```bash
 git clone <link_to_backend_repository>
-cd backend
+cd <your_dir_name> (default: 4f_salon)
 ```
 
 2. Install dependencies:
@@ -101,6 +101,14 @@ GOOGLE_CLIENT_SECRET=<your_google_client_secret>
 
 JWT_SECRET=<your_jwt_secret>
 JWT_EXPIRES_IN=<expire_duration>
+
+MAIL_HOST=<your_mail_host_service>
+MAIL_PORT=<mail_port>
+MAIL_USER=<your_mail>
+MAIL_PASSWORD=<your_mail_password>
+MAIL_SECURE=true
+
+FRONTEND_URL=<your_frontend_url>
 ```
 
 4. Run database migrations (if applicable):
@@ -115,7 +123,7 @@ npm run typeorm migration:run
 npm run start:dev
 ```
 
-By default, the backend will run on `http://localhost:3000`.
+By default, the backend will run on `http://localhost:8080`.
 
 ---
 
@@ -154,7 +162,7 @@ npm run start:dev
 Once both frontend and backend are running, you can access the app at:
 
 - **Frontend**: `http://localhost:5173`
-- **Backend API**: `http://localhost:3000/api`
+- **Backend API**: `http://localhost:8080/api`
 
 ---
 
@@ -162,7 +170,7 @@ Once both frontend and backend are running, you can access the app at:
 
 You can access the API documentation (Swagger) at:
 
-`http://localhost:3000/api/docs`
+`http://localhost:8080/api/docs`
 
 ---
 
@@ -174,4 +182,3 @@ Feel free to submit a pull request or open an issue to suggest improvements or r
 
 This project is licensed under the GPL-3.0 License.
 ```
->>>>>>> 38675488f604562b4bfcde3636e3ddfb67e66044
