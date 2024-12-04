@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpStatus, Param, ParseIntPipe, Patch, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { AppointmentsService } from './appointments.service';
 import { JwtAuthGuard, Roles, RolesGuard } from 'src/common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, UpdateAppointmentDTO } from './dto';
 import { Appointment } from './entity';
 
@@ -30,6 +30,7 @@ export class AppointmentsController {
         summary: 'Search appointments',
         description: 'Search appointments in the database * Requires logged in *'
     })
+    @ApiForbiddenResponse({ description: 'Not allowed! - Customer not allowed to find others appointment' })
     async findBy(
         @Req() req: any,
         @Query() where: QueryAppointmentDTO

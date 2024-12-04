@@ -16,11 +16,11 @@ import {
     NotFoundException
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDTO, UpdateUserDTO } from './dto';
+import { CreateUserDTO, UpdateProfileDTO, UpdateUserDTO } from './dto';
 import { JwtAuthGuard } from './../../common';
 import { Roles } from './../../common/decorators';
 import { RolesGuard } from './../../common';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBadRequestResponse, ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { User } from './entity';
 import { Request } from 'express';
 import { CustomersService } from '../customers/customers.service';
@@ -67,6 +67,8 @@ export class UsersController {
                 email: user.email,
                 phone: customer[0].phone,
                 points: customer[0].points,
+                booking_count: customer[0].booking_count,
+                cancel_count: customer[0].cancel_count,
                 avatar: user.picture_url,
                 isGoogleAccount: user.google_id ? true : false,
                 avatar_url: user.picture_url || 'http://www.gravatar.com/avatar/?d=mp',
@@ -111,6 +113,9 @@ export class UsersController {
         summary: 'Update a user', 
         description: 'Update a user in the database'
     })
+    @ApiNotFoundResponse({ description: 'User not found' })
+    @ApiBadRequestResponse({ description: 'Missing user id' })
+    @ApiForbiddenResponse({ description: 'Admin role cannot be changed' })
     async update(
         @Param('id', new ParseIntPipe()) id: number,
         @Body() user: UpdateUserDTO
@@ -125,9 +130,10 @@ export class UsersController {
         summary: 'Update user profile', 
         description: 'Update user profile'
     })
+    @ApiNotFoundResponse({ description: 'User not found' })
     async updateProfile(
         @Req() req: any,
-        @Body() user: { name: string, phone: string, email: string }
+        @Body() user: UpdateProfileDTO
     ): Promise<any> {
         const customer = await this.customersService.findBy({ user_id: req.user.id });
         if (customer.length === 0) {
@@ -135,7 +141,6 @@ export class UsersController {
         }
 
         await this.customersService.update({ ...customer[0], ...user });
-        await this.usersService.update({ id: req.user.id, email: user.email });
         return await this.profile(req);
     }
 

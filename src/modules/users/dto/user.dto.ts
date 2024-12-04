@@ -1,5 +1,6 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from 'class-validator';
 import { ApiProperty, PartialType } from '@nestjs/swagger'
+import { CustomerGender } from 'src/modules/customers/entity';
 
 export class CreateUserDTO {
     @ApiProperty({ example: '1'})
@@ -46,4 +47,21 @@ export class CustomerUserDTO extends CreateUserDTO {
     @IsString()
     @IsOptional()
     phone: string;
+}
+
+export class UpdateProfileDTO {
+    @ApiProperty({ example: 'trieutulong'})
+    @IsString()
+    @IsNotEmpty()
+    name: string;
+
+    @ApiProperty({ example: '0987654321'})
+    @IsString()
+    @IsOptional()
+    phone: string;
+
+    @ApiProperty({ enum: ['Male', 'Female', 'Secret']})
+    @IsString()
+    @IsOptional()
+    gender: CustomerGender;
 }

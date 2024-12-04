@@ -5,12 +5,14 @@ import { AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, Update
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equal, FindOptionsOrder, In, Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
+import { CustomersService } from '../customers/customers.service';
 
 @Injectable()
 export class AppointmentsService implements IEntity<Appointment, CreateAppointmentDTO, UpdateAppointmentDTO> {
     constructor(
         @InjectRepository(Appointment)
         private appointmentsRepository: Repository<Appointment>,
+        private readonly customersService: CustomersService,
         private readonly mailService: MailService
     ) {}
 
@@ -63,6 +65,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
             },
             where,
             relations: relation,
+            withDeleted: true,
             order: order === 'asc' ? { id: "ASC" } : { id: "DESC" },
             skip: skip,
             take: take
@@ -92,6 +95,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
 
         if (appointmentExist) throw new ConflictException('Another appointment already exists at this time');
         const newAppointment = await this.appointmentsRepository.save(appointment);
+        await this.customersService.incrementBookingCount(newAppointment.user_id);
         return newAppointment;
     }
 
@@ -103,7 +107,11 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
 
         oldAppointment = { ...oldAppointment, ...appointment };
 
-        return this.appointmentsRepository.save(oldAppointment);
+        const res = await this.appointmentsRepository.save(oldAppointment);
+        if (appointment.status === 'cancelled') {
+            await this.customersService.incrementCancelCount(oldAppointment.user_id);
+        }
+        return res;
     }
 
     async updateSelf(user_id: number, appointment: UpdateAppointmentDTO): Promise<Appointment> {
@@ -127,27 +135,35 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
         appointment = { ...oldAppointment, ...appointment };
         const res = await this.appointmentsRepository.update(id, appointment)
 
-        if (appointment.status === 'confirmed') {
-            await this.mailService.sendConfirmedAppointmentMail(
-                oldAppointment.customer.name,
-                oldAppointment.customer.email,
-                oldAppointment.date,
-                oldAppointment.start_time,
-                oldAppointment.service.title,
-                oldAppointment.branch.address,
-                oldAppointment.id
-            );
-        }
-        if (appointment.status === 'cancelled') {
-            await this.mailService.sendCancelledAppointmentMail(
-                oldAppointment.customer.name,
-                oldAppointment.customer.email,
-                oldAppointment.date,
-                oldAppointment.start_time,
-                oldAppointment.service.title,
-                oldAppointment.branch.address,
-                oldAppointment.id
-            );
+        switch (appointment.status) {
+            case 'confirmed':
+                await this.mailService.sendConfirmedAppointmentMail(
+                    oldAppointment.customer.name,
+                    oldAppointment.customer.email,
+                    oldAppointment.date,
+                    oldAppointment.start_time,
+                    oldAppointment.service.title,
+                    oldAppointment.branch.address,
+                    oldAppointment.id
+                );
+                break;
+            case 'cancelled':
+                await this.mailService.sendCancelledAppointmentMail(
+                    oldAppointment.customer.name,
+                    oldAppointment.customer.email,
+                    oldAppointment.date,
+                    oldAppointment.start_time,
+                    oldAppointment.service.title,
+                    oldAppointment.branch.address,
+                    oldAppointment.id
+                );
+                await this.customersService.incrementCancelCount(oldAppointment.user_id);
+                break;
+            case 'completed':
+                await this.customersService.incrementPoints(oldAppointment.user_id, Math.floor(oldAppointment.final_price / 100 * 5));
+                break;
+            default:
+                return { message: 'Invalid status' };
         }
         return { message: `Appointment ${appointment.status} successfully` };
     }

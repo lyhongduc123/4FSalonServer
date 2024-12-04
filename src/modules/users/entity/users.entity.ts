@@ -43,6 +43,9 @@ export class User {
     })
     role: string;
 
+    @Column()
+    banned: boolean;
+
     @CreateDateColumn()
     created_at: Date;
 

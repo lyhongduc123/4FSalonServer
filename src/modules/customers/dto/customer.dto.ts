@@ -1,5 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsEmail, IsString, IsNumber, IsOptional } from 'class-validator';
+import { CustomerGender } from '../entity';
 
 export class CreateCustomerDTO {
     @ApiProperty({ example: 1 })
@@ -28,4 +29,9 @@ export class CreateCustomerDTO {
     user_id?: number;
 }
 
-export class UpdateCustomerDTO extends PartialType(CreateCustomerDTO) {}
+export class UpdateCustomerDTO extends PartialType(CreateCustomerDTO) {
+    @ApiProperty({ enum: ['Male', 'Female', 'Secret'] })
+    @IsString()
+    @IsOptional()
+    gender: CustomerGender;
+}

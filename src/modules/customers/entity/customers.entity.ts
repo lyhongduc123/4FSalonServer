@@ -9,6 +9,8 @@ import {
 import { User } from '../../users/entity';
 import { Appointment } from '../../appointments/entity';
 
+export type CustomerGender = 'Male' | 'Female' | 'Secret';
+
 @Entity('customers')
 export class Customer {
     @PrimaryGeneratedColumn()
@@ -31,6 +33,12 @@ export class Customer {
     phone: string;
 
     @Column({
+        nullable: true,
+        enum: ['Male, Femail, Secret'],
+    })
+    gender: CustomerGender;
+
+    @Column({
         default: 0,
     })
     booking_count: number;
@@ -42,6 +50,7 @@ export class Customer {
 
     @Column({
         default: 0,
+        type: 'int',
     })
     points: number;
 
