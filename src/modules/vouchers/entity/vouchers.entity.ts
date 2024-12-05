@@ -1,3 +1,4 @@
+import { Appointment } from "src/modules/appointments/entity/appointments.entity";
 import { Branch } from "src/modules/branches/entity";
 import { 
     Column,
@@ -53,6 +54,9 @@ export class Voucher {
     @Column()
     branch_id: number;
 
+    @ManyToMany(() => Appointment, (appointment) => appointment.voucher, {nullable: true})
+    @JoinColumn({name: 'appointment_id'})
+    appointments: Appointment[];
 
     @ManyToMany(() => Branch, (branch) => branch.vouchers, {nullable: true})
     @JoinColumn({name: 'branch_id'})

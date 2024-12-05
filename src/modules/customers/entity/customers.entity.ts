@@ -33,8 +33,9 @@ export class Customer {
     phone: string;
 
     @Column({
+        type: 'enum',
         nullable: true,
-        enum: ['Male, Femail, Secret'],
+        enum: ['Male', 'Female', 'Secret'],
     })
     gender: CustomerGender;
 

@@ -55,6 +55,11 @@ export class CreateAppointmentDTO {
     @IsNumber()
     @IsNotEmpty()
     branch_id: number;
+
+    @ApiProperty({})
+    @IsOptional()
+    @IsNumber()
+    voucher_id: number;
 }
 
 export class UpdateAppointmentDTO extends PartialType(CreateAppointmentDTO) {

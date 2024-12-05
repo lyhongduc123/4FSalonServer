@@ -37,14 +37,14 @@ export class User {
     google_id: string;
 
     @Column({
+        type: 'enum',
         nullable: false,
-        enum: [('customer, manager, admin')],
+        enum: ['customer', 'manager', 'admin'],
         default: 'customer'
     })
     role: string;
 
-    @Column()
-    banned: boolean;
+    
 
     @CreateDateColumn()
     created_at: Date;

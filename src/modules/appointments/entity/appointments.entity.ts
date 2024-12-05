@@ -19,6 +19,7 @@ import { Branch } from "src/modules/branches/entity";
 import { Feedback } from "src/modules/feedbacks/entity";
 import { Exclude } from "class-transformer";
 import { User } from "src/modules/users/entity";
+import { Voucher } from "src/modules/vouchers/entity";
 
 export type AppointmentStatus = 'pending' | 'confirmed' | 'completed' | 'cancelled';
 
@@ -42,12 +43,19 @@ export class Appointment {
     @Column()
     final_price: number;
 
+    
+
     @Column({
         type: 'enum',
         enum: ['pending', 'confirmed', 'completed', 'cancelled'],
         default: 'pending'
     })
     status: AppointmentStatus;
+
+    @Column()
+    @RelationId((appointment: Appointment) => appointment.voucher)
+    voucher_id: number;
+    
 
     @Column()
     @RelationId((appointment: Appointment) => appointment.customer)
@@ -70,6 +78,10 @@ export class Appointment {
 
     @UpdateDateColumn()
     updated_at: Date;
+
+    @ManyToMany(() => Voucher, (voucher) => voucher.appointments)
+    @JoinColumn({ name: 'voucher_id',referencedColumnName: 'id' })
+    voucher: Voucher;
 
     @ManyToOne(() => Customer, (customer) => customer.appointments, { nullable: false })
     @JoinColumn({ name: 'user_id', referencedColumnName: 'user_id' })
