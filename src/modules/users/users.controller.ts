@@ -70,6 +70,7 @@ export class UsersController {
                 booking_count: customer[0].booking_count,
                 cancel_count: customer[0].cancel_count,
                 avatar: user.picture_url,
+                gender: customer[0].gender,
                 isGoogleAccount: user.google_id ? true : false,
                 avatar_url: user.picture_url || 'http://www.gravatar.com/avatar/?d=mp',
             }
