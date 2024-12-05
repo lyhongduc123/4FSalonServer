@@ -1,8 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AppointmentsService } from '../appointments/appointments.service';
-import { Between } from 'typeorm';
+import { Between, In } from 'typeorm';
 import { MailService } from '../mail/mail.service';
+import { start } from 'repl';
 
 @Injectable()
 export class TasksService {
@@ -12,7 +13,6 @@ export class TasksService {
 
     @Cron(CronExpression.EVERY_DAY_AT_9PM, {
         name: 'notifications',
-        utcOffset: 7
     }) 
     async sendReminderMail() {
         this.logger.debug('Sending reminder emails');
@@ -29,6 +29,22 @@ export class TasksService {
                 appointment.branch.address,
                 appointment.id
             )
+        }
+    }
+
+    @Cron('0 */20 7-22 * * *', {
+        name: 'cancel-appointment-overdue',
+    })
+    async cancelAppointmentOverdue() {
+        const awaitingAppointments = await this.appointmentService.findBy({
+            status: In(['pending', 'confirmed']),
+            date: Between(new Date(Date.now() - 1260000), new Date(Date.now() - 60000)),
+            start_time: Between(new Date(Date.now() - 1260000), new Date(Date.now() - 60000))
+        });
+
+        for (const appointment of awaitingAppointments) {
+            appointment.status = 'cancelled';
+            await this.appointmentService.patch(appointment.id, appointment);
         }
     }
 }

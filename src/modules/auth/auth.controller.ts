@@ -68,18 +68,20 @@ export class AuthController {
         summary: 'Login', 
         description: 'Login with email and password' 
     })
+    @ApiBadRequestResponse({ description: 'Invalid credentials' })
+    @ApiUnauthorizedResponse({ description: 'Unauthorized' })
     async login(@Body() user: LoginDTO): Promise<any> {
         return this.authService.login(user);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('customer')
-    @Roles('admin')
+    @Roles('customer', 'admin')
     @Post('change-password')
     @ApiOperation({ 
         summary: 'Change password', 
         description: 'Change password of user' 
     })
+    @ApiBearerAuth('JWT-auth')
     @ApiNotFoundResponse({ description: 'User not found' })
     @ApiUnauthorizedResponse({ description: 'Invalid password' })
     @ApiResponse({ status: 200, description: 'Password changed successfully' })
