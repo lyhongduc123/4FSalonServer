@@ -8,8 +8,11 @@ import { start } from 'repl';
 @Injectable()
 export class TasksService {
     private readonly logger = new Logger(TasksService.name);
-    private readonly appointmentService: AppointmentsService;
-    private readonly mailService: MailService;
+    
+    constructor(
+        private readonly appointmentService: AppointmentsService,
+        private readonly mailService: MailService
+    ) {}
 
     @Cron(CronExpression.EVERY_DAY_AT_9PM, {
         name: 'notifications',
