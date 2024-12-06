@@ -13,6 +13,12 @@ async function bootstrap() {
     credentials: true                // Allow cookies and credentials
   });
 
+  app.enableCors({
+    origin: 'http://127.0.0.1:5173', // Frontend origin
+    methods: 'GET,POST,PUT,PATCH,DELETE',  // Allowed methods
+    credentials: true                // Allow cookies and credentials
+  });
+
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
