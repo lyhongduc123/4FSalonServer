@@ -28,7 +28,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
                 created_at: true,
                 updated_at: true
             },
-            relations: ['customer', 'employee', 'service', 'branch','voucher']
+            relations: ['customer', 'employee', 'service', 'branch', 'voucher']
         });
     }
 
@@ -40,7 +40,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
     }
 
     async findBy(where: any): Promise<Appointment[]> {
-        let relation = ['customer', 'employee', 'service', 'branch','voucher'];
+        let relation = ['customer', 'employee', 'service', 'branch', 'voucher'];
         if (where.have_feedback) {
             relation = [...relation, 'feedback'];
             delete where.have_feedback

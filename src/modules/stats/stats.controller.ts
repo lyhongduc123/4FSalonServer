@@ -2,9 +2,9 @@ import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { StatsService } from './stats.service';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { QueryStats } from './dtos/stats.dto';
-import { JwtAuthGuard, Roles } from 'src/common';
+import { JwtAuthGuard, Roles, RolesGuard } from 'src/common';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Roles('admin', 'manager')
 @ApiBearerAuth('JWT-auth')
 @ApiTags('Statistic')

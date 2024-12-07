@@ -13,7 +13,8 @@ import {
     PrimaryGeneratedColumn, 
     UpdateDateColumn, 
     RelationId,
-    OneToOne
+    OneToOne,
+    OneToMany
 } from "typeorm";
 import { Branch } from "src/modules/branches/entity";
 import { Feedback } from "src/modules/feedbacks/entity";
@@ -52,10 +53,9 @@ export class Appointment {
     })
     status: AppointmentStatus;
 
-    @Column()
+    @Column({ nullable: true })
     @RelationId((appointment: Appointment) => appointment.voucher)
     voucher_id: number;
-    
 
     @Column()
     @RelationId((appointment: Appointment) => appointment.customer)
@@ -79,8 +79,8 @@ export class Appointment {
     @UpdateDateColumn()
     updated_at: Date;
 
-    @ManyToMany(() => Voucher, (voucher) => voucher.appointments)
-    @JoinColumn({ name: 'voucher_id',referencedColumnName: 'id' })
+    @ManyToOne(() => Voucher, (voucher) => voucher.appointments, { nullable: true })
+    @JoinColumn({ name: 'voucher_id', referencedColumnName: 'id' })
     voucher: Voucher;
 
     @ManyToOne(() => Customer, (customer) => customer.appointments, { nullable: false })

@@ -3,7 +3,6 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { AppointmentsService } from '../appointments/appointments.service';
 import { Between, In } from 'typeorm';
 import { MailService } from '../mail/mail.service';
-import { start } from 'repl';
 
 @Injectable()
 export class TasksService {

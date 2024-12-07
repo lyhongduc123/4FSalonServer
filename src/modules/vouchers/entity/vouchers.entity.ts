@@ -5,7 +5,12 @@ import {
     CreateDateColumn,
     Entity, 
     JoinColumn, 
+    JoinTable, 
     ManyToMany, 
+    
+    ManyToOne, 
+    
+    OneToMany, 
     
     PrimaryGeneratedColumn, 
     UpdateDateColumn, 
@@ -54,8 +59,7 @@ export class Voucher {
     @Column()
     branch_id: number;
 
-    @ManyToMany(() => Appointment, (appointment) => appointment.voucher, {nullable: true})
-    @JoinColumn({name: 'appointment_id'})
+    @OneToMany(() => Appointment, (appointment) => appointment.voucher, { nullable: true })
     appointments: Appointment[];
 
     @ManyToMany(() => Branch, (branch) => branch.vouchers, {nullable: true})
