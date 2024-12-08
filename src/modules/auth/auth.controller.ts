@@ -97,7 +97,7 @@ export class AuthController {
 
     @Patch('reset-password')
     @ApiResponse({ status: 200, description: 'Password reset successfully + return access token' })
-    @ApiBadRequestResponse({ description: 'Invalid token' })
+    @ApiUnauthorizedResponse({ description: 'Invalid token (Could be used or expired)' })
     @ApiNotFoundResponse({ description: 'User not found' })
     async resetPassword(@Body() resetPasswordDTO: ResetPasswordDTO) {
         return this.authService.resetPassword(resetPasswordDTO);

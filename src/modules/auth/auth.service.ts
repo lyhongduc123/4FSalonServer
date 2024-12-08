@@ -8,6 +8,7 @@ import { CreateCustomerDTO } from '../customers/dto/customer.dto';
 import { CustomersService } from '../customers/customers.service';
 import { MailService } from '../mail/mail.service';
 
+
 @Injectable()
 export class AuthService {
     constructor(
@@ -35,7 +36,10 @@ export class AuthService {
         return Promise.resolve(user);
     }
 
-    async generateJwt(payload): Promise<{access_token: string}> {
+    async generateJwt(payload, expireIn?): Promise<{access_token: string}> {
+        if (expireIn) {
+            return {access_token: this.jwtService.sign(payload, {expiresIn: expireIn})};
+        }
         return {access_token: this.jwtService.sign(payload)};
     }
 
@@ -150,7 +154,16 @@ export class AuthService {
 
         user.password = newPassword;
         await this.usersService.update(user);
-        return { message: 'Password changed successfully' };
+        const newToken = await this.generateJwt({
+            sub: user.id,
+            email: user.email,
+            password: user.password,
+            role: user.role,
+        });
+        return { 
+            message: 'Password changed successfully',
+            access_token: newToken.access_token
+        };
     }
 
     async forgotPassword(email: string) {
@@ -162,7 +175,9 @@ export class AuthService {
                 email: user.email,
                 password: user.password,
                 role: user.role,
-            });
+                },
+                '300s'
+            );
             await this.mailService.sendResetPasswordMail(user.email, token.access_token);
         }
 
@@ -171,15 +186,13 @@ export class AuthService {
 
     async resetPassword(resetPasswordDTO: ResetPasswordDTO) {
         const { token, newPassword } = resetPasswordDTO;
-        const payload = this.jwtService.verify(token);
-        const user = await this.usersService.findOne(payload.email);
-        const isPasswordValid = await this.usersService.comparePassword(payload.password, user.password);
-        if (!isPasswordValid) {
-            throw new BadRequestException('Invalid token');
+        let payload;
+        try {
+            payload = this.jwtService.verify(token);
+        } catch (err) {
+            throw new UnauthorizedException('Invalid token');
         }
-        if (!user) {
-            throw new NotFoundException('User not found');
-        }
+        const user = await this.usersService.findOne(payload.id);
 
         user.password = newPassword;
         await this.usersService.update(user);

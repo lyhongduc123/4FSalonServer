@@ -12,7 +12,7 @@ import { MailModule } from '../mail/mail.module';
   imports: [
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' }
+      signOptions: { expiresIn: process.env.JWT_EXPIRES_IN }
     }),
     UsersModule,
     CustomersModule,

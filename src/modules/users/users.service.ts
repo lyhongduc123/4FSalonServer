@@ -62,7 +62,7 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
         if (!userExists) {
             throw new NotFoundException('User not found');
         }
-        if (user.password !== undefined && user.password !== null && user.password !== '') {
+        if (!user.password) {
             user.password = await this.hashPassword(user.password);
         }
         if (userExists.role === 'admin' && user.role !== 'admin') {
