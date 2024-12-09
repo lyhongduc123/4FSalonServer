@@ -19,7 +19,7 @@ export class CreateUserDTO {
     @MinLength(6)
     password: string;
 
-    @ApiProperty({ example: 'null'})
+    @ApiProperty()
     @IsString()
     @IsOptional()
     google_id?: string;

@@ -48,6 +48,8 @@ async function bootstrap() {
       showRequestDuration: true,
     },
   });
+
+  app.useStaticAssets(join(__dirname, '..', 'public/dist'));
   
   await app.listen(process.env.PORT ?? 3000);
   

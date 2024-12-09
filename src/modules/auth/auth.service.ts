@@ -101,6 +101,7 @@ export class AuthService {
         if (userExists) {
             throw new BadRequestException('User already exists');
         }
+        delete user.google_id;
         user.id = null;
         let user_id = null
         
