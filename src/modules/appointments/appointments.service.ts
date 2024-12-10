@@ -46,7 +46,13 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
             delete where.have_feedback
         }
         const { order, skip, take, date, start_time, estimated_end_time } = where;
-
+        delete where.order;
+        delete where.skip;
+        delete where.take;
+        delete where.date;
+        delete where.start_time;
+        delete where.estimated_end_time;
+        
         return this.appointmentsRepository.find({
             select: {
                 id: true,
