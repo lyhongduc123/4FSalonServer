@@ -8,7 +8,7 @@ import { JwtAuthGuard, Roles, RolesGuard } from 'src/common';
 @Roles('admin', 'manager')
 @ApiBearerAuth('JWT-auth')
 @ApiTags('Statistic')
-@Controller('stats')
+@Controller('api/stats')
 export class StatsController {
     constructor(
         private statsService: StatsService
