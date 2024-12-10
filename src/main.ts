@@ -13,6 +13,8 @@ async function bootstrap() {
     origin: [
       'http://localhost:5173',
       'http://127.0.0.1:5173',
+      `http://localhost:${process.env.PORT ?? 3000}`,
+      'http://fall2024c8g2.int3306.freeddns.org',
     ], // Frontend origin
     methods: 'GET,POST,PUT,PATCH,DELETE',  // Allowed methods
     credentials: true                // Allow cookies and credentials
@@ -49,9 +51,13 @@ async function bootstrap() {
     },
   });
 
-  app.useStaticAssets(join(__dirname, '..', 'public/dist'));
+  app.useStaticAssets(join(__dirname, '..', 'client/dist'));
+  app.setBaseViewsDir(join(__dirname, '..', 'client/dist'));
+  app.setViewEngine('hbs');
   
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3000, () => {
+    console.log(`Server is running on http://localhost:${process.env.PORT ?? 3000}`);
+  });
   
 }
 bootstrap();

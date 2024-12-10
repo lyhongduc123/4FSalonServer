@@ -17,8 +17,6 @@ import { SchedulesModule } from './modules/schedules/schedules.module';
 import { VouchersModule } from './modules/vouchers/vouchers.module';
 import { StatsModule } from './modules/stats/stats.module';
 import { MailModule } from './modules/mail/mail.module';
-import { ScheduleModule } from '@nestjs/schedule';
-import mailerConfig from './config/mailer.config';
 import { TasksModule } from './modules/tasks/tasks.module';
 
 
