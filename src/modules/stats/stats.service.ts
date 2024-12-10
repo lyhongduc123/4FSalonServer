@@ -13,7 +13,7 @@ export class StatsService {
 
         const stats = await this.dataSource
         .createQueryBuilder(Appointment, 'appointment')
-        .select('COUNT(appointment.id)', 'number_appointments')
+        .select('COUNT(appointment.id)', 'number_of_appointments')
         .addSelect('SUM(appointment.final_price)', 'total_revenue')
         .innerJoin("appointment.branch", "branch")
         .innerJoin("appointment.employee", "employee")
@@ -55,7 +55,7 @@ export class StatsService {
                 case 'service':
                     stats.addSelect("service.id")
                     .addSelect("service.title")
-                    .groupBy("serivce.id")
+                    .groupBy("service.id")
                     break;
                 case 'employee':
                     stats.addSelect("employee.id")
