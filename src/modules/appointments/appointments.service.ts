@@ -3,7 +3,7 @@ import { IEntity } from 'src/interfaces';
 import { Appointment } from './entity';
 import { AppointmentStatusDTO, CreateAppointmentDTO, QueryAppointmentDTO, UpdateAppointmentDTO } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Equal, FindOptionsOrder, In, Repository } from 'typeorm';
+import { Equal, FindOptionsOrder, In, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 import { CustomersService } from '../customers/customers.service';
 
@@ -45,12 +45,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
             relation = [...relation, 'feedback'];
             delete where.have_feedback
         }
-        const order = where.order;
-        const skip = where.skip;
-        const take = where.take;
-        delete where.order;
-        delete where.skip;
-        delete where.take;
+        const { order, skip, take, date, start_time, estimated_end_time } = where;
 
         return this.appointmentsRepository.find({
             select: {
@@ -63,7 +58,12 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
                 created_at: true,
                 updated_at: true,
             },
-            where,
+            where: {
+                date: date ? new Date(date) : undefined,
+                start_time: start_time ? MoreThanOrEqual(new Date(start_time)) : undefined,
+                estimated_end_time: estimated_end_time ? new Date(estimated_end_time) : undefined,
+                ...where
+            },
             relations: relation,
             withDeleted: true,
             order: order === 'asc' ? { id: "ASC" } : { id: "DESC" },
