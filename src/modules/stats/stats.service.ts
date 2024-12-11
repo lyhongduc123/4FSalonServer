@@ -37,35 +37,38 @@ export class StatsService {
 
         if (query.group_by) {
             switch(query.group_by) {
-                case 'branch':
-                    stats.addSelect("appointment.branch_id as branch_id")
-                    .addSelect("branch.name")
-                    .groupBy("appointment.branch")
-                    break;
                 case 'day':
                     stats.addSelect("appointment.date")
                     .groupBy("appointment.date")
                     break;
-                case 'week':
-                    stats.addSelect("appointment.date")
-                    .groupBy("appointment.date.MONTH")
+                case 'month':
+                    stats.addSelect("MONTH(appointment.date)", "appointment_date")
+                    .groupBy("MONTH(appointment.date)")
                     break;
                 case 'year':
-                    stats.addSelect("appointment.date")
-                    .groupBy("appointment.date.YEAR")
+                    stats.addSelect("YEAR(appointment.date)", "appointment_date")
+                    .groupBy("YEAR(appointment.date)")
                     break;
-                case 'service':
-                    stats.addSelect("service.id")
-                    .addSelect("service.title")
-                    .groupBy("service.id")
-                    break;
-                case 'employee':
-                    stats.addSelect("employee.id")
-                    .addSelect("employee.name")
-                    .groupBy("employee.id")
+                default:
                     break;
             }
         }
+        if (query.group_by_branch) {
+            stats.addSelect("appointment.branch_id as branch_id")
+            .addSelect("branch.name")
+            .addGroupBy("appointment.branch")
+        }
+        if (query.group_by_employee) {
+            stats.addSelect("employee.id")
+            .addSelect("employee.name")
+            .addGroupBy("employee.id")
+        }
+        if (query.group_by_service) {
+            stats.addSelect("service.id")
+            .addSelect("service.title")
+            .addGroupBy("service.id")
+        }
+
         const cacheTTL = Math.max(Math.abs(startDate.getTime() - endDate.getTime()), 86400000)
         stats.cache(query, cacheTTL)
         return stats.getRawMany();
@@ -116,13 +119,13 @@ export class StatsService {
                     new_customer.addSelect("DATE(user.created_at)", "created_at")
                     .groupBy("DATE(user.created_at)")
                     break;
-                case 'week':
-                    new_customer.addSelect("DATE(user.created_at)", "created_at")
-                    .groupBy("user.created_at.MONTH")
+                case 'month':
+                    new_customer.addSelect("MONTH(user.created_at)", "created_at")
+                    .groupBy("MONTH(user.created_at)")
                     break;
                 case 'year':
-                    new_customer.addSelect("DATE(user.created_at)", "created_at")
-                    .groupBy("user.created_at.YEAR")
+                    new_customer.addSelect("YEAR(user.created_at)", "created_at")
+                    .groupBy("YEAR(user.created_at)")
                     break;
             }
         }

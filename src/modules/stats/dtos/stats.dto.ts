@@ -38,6 +38,15 @@ export class QueryStats {
     group_by: string;
 
     @ApiProperty({ required: false })
+    group_by_branch: boolean;
+
+    @ApiProperty({ required: false })
+    group_by_service: boolean;
+
+    @ApiProperty({ required: false })
+    group_by_employee: boolean;
+
+    @ApiProperty({ required: false })
     customer: boolean;
 
     @ApiProperty({ required: false })
