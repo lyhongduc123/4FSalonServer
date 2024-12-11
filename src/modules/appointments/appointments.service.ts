@@ -28,6 +28,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
                 created_at: true,
                 updated_at: true
             },
+            withDeleted: true,
             relations: ['customer', 'employee', 'service', 'branch', 'voucher']
         });
     }
