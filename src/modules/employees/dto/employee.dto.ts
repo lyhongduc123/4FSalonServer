@@ -10,11 +10,6 @@ import { Customer } from 'src/modules/customers/entity';
 import { Employee } from '../entity';
 
 export class CreateEmployeeDTO {
-    @ApiProperty({ example: 1 })
-    @IsNumber()
-    @IsOptional()
-    id?: number;
-
     @ApiProperty({ example: 'PC01' })
     @IsString()
     name: string;
@@ -55,7 +50,11 @@ export class CreateEmployeeDTO {
     branch_id: number;
 }
 
-export class UpdateEmployeeDTO extends PartialType(CreateEmployeeDTO) {}
+export class UpdateEmployeeDTO extends PartialType(CreateEmployeeDTO) {
+    @ApiProperty({ example: 1 })
+    @IsNumber()
+    id: number;
+}
 
 
 class EmployeeDTO {

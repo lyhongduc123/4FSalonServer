@@ -113,15 +113,15 @@ export class StatsService {
         if (query.new_customer_group_by) {
             switch(query.new_customer_group_by) {
                 case 'day':
-                    new_customer.addSelect("user.created_at", "created_at")
-                    .groupBy("user.created_at")
+                    new_customer.addSelect("DATE(user.created_at)", "created_at")
+                    .groupBy("DATE(user.created_at)")
                     break;
                 case 'week':
-                    new_customer.addSelect("user.created_at", "created_at")
+                    new_customer.addSelect("DATE(user.created_at)", "created_at")
                     .groupBy("user.created_at.MONTH")
                     break;
                 case 'year':
-                    new_customer.addSelect("user.created_at", "created_at")
+                    new_customer.addSelect("DATE(user.created_at)", "created_at")
                     .groupBy("user.created_at.YEAR")
                     break;
             }
