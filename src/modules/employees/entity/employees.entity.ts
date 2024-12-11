@@ -26,7 +26,9 @@ export class Employee {
     @Column()
     work_position: string;
 
-    @Column()
+    @Column({
+        default: true
+    })
     status: boolean;
 
     @Column({ type: 'float', nullable: true })

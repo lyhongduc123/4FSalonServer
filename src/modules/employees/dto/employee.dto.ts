@@ -36,14 +36,17 @@ export class CreateEmployeeDTO {
     
     @ApiProperty({ required: false })
     @IsNotEmpty()
+    @IsOptional()
     big_avatar_url?: string;
 
     @ApiProperty({ required: false })
     @IsNotEmpty()
+    @IsOptional()
     small_avatar_url?: string;
 
     @ApiProperty({ example: true, description: 'true = working, false = not working' })
     @IsNotEmpty()
+    @IsOptional()
     status: boolean;
 
     @ApiProperty({ example: 1 })
