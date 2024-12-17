@@ -50,10 +50,15 @@ export class SchedulesService {
     }
 
     async findSpecificOffDays(where: any): Promise<SpecificOffDays[]> {
+        const { date } = where;
+        delete where.date;
         return await this.specificOffDaysRepository.find({ 
             select: ['id', 'employee_id', 'date'],
             relations: ['employee'],
-            where: where 
+            where: {
+                date: new Date(date),
+                ...where
+            } 
         });
     }
 
