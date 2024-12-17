@@ -43,7 +43,7 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
         if (!schedules) {
             throw new BadRequestException('Employee not available');
         }
-        if (offday || !schedules[f_date.getDay() + 2]) {
+        if (offday) {
             return { message: 'Employee is off on this day' };
         }
         const appointments = await this.appointmentsService.findAvailable(id, f_date);
