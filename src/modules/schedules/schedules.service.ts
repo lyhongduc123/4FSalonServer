@@ -143,4 +143,17 @@ export class SchedulesService {
         }
         return await this.workingScheduleTemplateRepository.softDelete({ id });
     }
+
+    async isWorking(employee_id: number, date: Date): Promise<any> {
+        const day = date.getDay();
+        const dayName = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+        const dayValue = dayName[day];
+        const workingDay = await this.workingScheduleTemplateRepository.findOne({ 
+            where: {
+                employee_id,
+                [dayValue]: true
+            }
+        });
+        return workingDay;
+    }
 }

@@ -40,10 +40,36 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
         const f_date = new Date(date);
         const schedules = await this.schedulesService.findWorkingScheduleTemplateByEmployee(id);
         const offday = await this.schedulesService.findSpecificOffDays({ employee_id: id, date: f_date });
+        
         if (!schedules) {
             throw new BadRequestException('Employee not available');
         }
-        if (offday) {
+
+        let isWorking = false;
+        switch (f_date.getDay()) {
+            case 1:
+                isWorking = schedules[0].monday;
+                break;
+            case 2:
+                isWorking = schedules[0].tuesday;
+                break;
+            case 3:
+                isWorking = schedules[0].wednesday;
+                break;
+            case 4:
+                isWorking = schedules[0].thursday;
+                break;
+            case 5:
+                isWorking = schedules[0].friday;
+                break;
+            case 6:
+                isWorking = schedules[0].saturday;
+                break;
+            case 0:
+                isWorking = schedules[0].sunday;
+                break;
+        }
+        if (offday.length > 0 || !isWorking) {
             return { message: 'Employee is off on this day' };
         }
         const appointments = await this.appointmentsService.findAvailable(id, f_date);
