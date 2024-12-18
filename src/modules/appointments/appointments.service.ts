@@ -25,6 +25,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
                 start_time: true,
                 estimated_end_time: true,
                 status: true,
+                final_price: true,
                 created_at: true,
                 updated_at: true
             },
