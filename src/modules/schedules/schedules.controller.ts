@@ -82,12 +82,16 @@ export class SchedulesController {
         return await this.schedulesService.createWorkingScheduleTemplate(createWorkingScheduleTemplate);
     }
 
-    @Put('specific-off-days')
+    @Put('specific-off-days/:id')
     @ApiOperation({
         summary: 'Update specific off days',
         description: 'Update specific off days in the database'
     })
-    async updateSpecificOffDays(@Body() updateSpecificOffDays: UpdateSpecificOffDaysDTO) {
+    async updateSpecificOffDays(
+        @Body() updateSpecificOffDays: UpdateSpecificOffDaysDTO,
+        @Param('id', new ParseIntPipe()) id: number,
+    ) {
+        updateSpecificOffDays.id = id;
         return await this.schedulesService.updateSpecificOffDays(updateSpecificOffDays);
     }
 
