@@ -26,7 +26,10 @@ export class BranchesService implements IEntity<Branch, CreateBranchDTO, UpdateB
     }
 
     async create(branch: CreateBranchDTO): Promise<Branch> {
-        const branchExist = await this.branchesRepository.findOneBy(branch);
+        const branchExist = await this.branchesRepository.findOne({
+            where: { name: branch.name },
+            withDeleted: true
+        });
         if (branchExist) {
             throw new ConflictException('Branch already exist');
         }
