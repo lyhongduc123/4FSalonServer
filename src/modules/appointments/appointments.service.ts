@@ -90,7 +90,9 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
     }
 
     async create(appointment: CreateAppointmentDTO): Promise<Appointment> {
-        appointment.status = 'pending';
+        if (appointment.status !== 'confirmed') {
+            appointment.status = 'pending';
+        }
         appointment.id = null;
 
         const appointmentExist = await this.appointmentsRepository.findOneBy({
