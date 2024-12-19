@@ -78,31 +78,36 @@ export class EmployeesService implements IEntity<Employee, CreateEmployeeDTO, Up
   
 
     async create(employee: CreateEmployeeDTO, branch: Branch): Promise<Employee> {
-        const employeeExists = await this.employeesRepository.findOneBy({
-            email: employee.email,
-            phone: employee.phone,
-            name: employee.name,
-        });  
-        if (employeeExists) {
-            throw new ConflictException('Employee already exists');
+        try{
+            const employeeExists = await this.employeesRepository.findOneBy({
+                email: employee.email,
+                phone: employee.phone,
+                name: employee.name,
+            });  
+            if (employeeExists) {
+                throw new ConflictException('Employee already exists');
+            }
+            const newEmployee = this.employeesRepository.create({...employee, branch});
+            const insertedEmployee = await this.employeesRepository.save(newEmployee);
+
+            const workSchedule: WorkingScheduleTemplateDTO = {
+                employee_id: newEmployee.id,
+                monday: false, 
+                tuesday: false,
+                wednesday: false, 
+                thursday: false, 
+                friday: false, 
+                saturday: false, 
+                sunday: false
+            }
+
+            await this.schedulesService.createWorkingScheduleTemplate(workSchedule);
+
+            return this.employeesRepository.save(newEmployee);
+        } catch (error) {
+            console.log(error);
+            throw new BadRequestException('Error');
         }
-        const newEmployee = this.employeesRepository.create({...employee, branch});
-        const insertedEmployee = await this.employeesRepository.save(newEmployee);
-
-        const workSchedule: WorkingScheduleTemplateDTO = {
-            employee_id: newEmployee.id,
-            monday: false, 
-            tuesday: false,
-            wednesday: false, 
-            thursday: false, 
-            friday: false, 
-            saturday: false, 
-            sunday: false
-        }
-
-        await this.schedulesService.createWorkingScheduleTemplate(workSchedule);
-
-        return this.employeesRepository.save(newEmployee);
     }
 
     async update(employee: UpdateEmployeeDTO): Promise<Employee> {

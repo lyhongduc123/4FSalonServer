@@ -51,7 +51,20 @@ export class Branch {
         nullable: true
     })
     picture_url: string;
-
+    @Column({
+        type: 'decimal',
+        precision: 11,
+        scale: 8,
+        default: 1.23456789
+    })
+    long: number;
+    @Column({
+        type: 'decimal',
+        precision: 11,
+        scale: 8,
+        default: 1.23456789
+    })
+    lat: number;
     @OneToMany(() => Employee, (employee) => employee.branch)
     employees: Employee[];
 

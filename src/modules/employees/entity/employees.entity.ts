@@ -31,16 +31,20 @@ export class Employee {
     })
     status: boolean;
 
-    @Column({ type: 'float', nullable: true })
+    @Column({ type: 'float', default: 0 })
     overall_rating: number;
 
-    @Column()
+    @Column({default: 0})
     number_of_ratings: number;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     big_avatar_url: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     small_avatar_url: string;
 
     @Column()

@@ -34,6 +34,16 @@ export class CreateBranchDTO {
     @IsString()
     @IsOptional()
     picture_url: string;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    long: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    lat: number;
 }
 
 export class UpdateBranchDTO extends PartialType(CreateBranchDTO) {
