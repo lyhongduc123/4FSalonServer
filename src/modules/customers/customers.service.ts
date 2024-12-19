@@ -68,6 +68,7 @@ export class CustomersService implements IEntity<Customer, CreateCustomerDTO, Up
 
     async incrementCancelCount(user_id: number): Promise<void> {
         const customer = await this.customersRepository.findOneBy({ user_id });
+        console.log(customer);
         customer.cancel_count += 1;
         this.customersRepository.update(customer.id, { cancel_count: customer.cancel_count });
     }

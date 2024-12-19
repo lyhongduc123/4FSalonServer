@@ -89,16 +89,11 @@ export class AppointmentsController {
         @Req() req: any,
         @Body() updateAppointmentDTO: UpdateAppointmentDTO
     ): Promise<any> {
-        try {
-            updateAppointmentDTO.id = id;
-            console.log(req.user.id, updateAppointmentDTO);
-            if (req.user.role === 'customer') {
-                return await this.appointmentsService.updateSelf(req.user.id, updateAppointmentDTO);
-            } else {
-                return await this.appointmentsService.update(updateAppointmentDTO);
-            }
-        } catch (error) {
-            throw new BadRequestException(error.message);
+        updateAppointmentDTO.id = id;
+        if (req.user.role === 'customer') {
+            return await this.appointmentsService.updateSelf(req.user.id, updateAppointmentDTO);
+        } else {
+            return await this.appointmentsService.update(updateAppointmentDTO);
         }
     }
 

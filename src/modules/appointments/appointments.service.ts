@@ -135,6 +135,9 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
 
         oldAppointment = { ...oldAppointment, ...appointment};
         const updatedAppointment = await this.appointmentsRepository.save(oldAppointment);
+        if (appointment.status === 'cancelled') {
+            await this.customersService.incrementCancelCount(oldAppointment.user_id);
+        }
 
         return updatedAppointment;
     }
