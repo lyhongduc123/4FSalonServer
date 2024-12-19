@@ -93,11 +93,10 @@ export class SchedulesController {
     ) {
         try {
             updateSpecificOffDays.id = id;
-            await this.schedulesService.updateSpecificOffDays(updateSpecificOffDays);
+            return await this.schedulesService.updateSpecificOffDays(updateSpecificOffDays);
         } catch (error) {
             throw new BadRequestException(error.message);
         }
-        return { message: 'Specific off days updated successfully' };
     }
 
     @Put()
@@ -107,11 +106,10 @@ export class SchedulesController {
     })
     async updateWorkingScheduleTemplate(@Body() updateWorkingScheduleTemplate: UpdateWorkingScheduleTemplateDTO) {
         try {
-            await this.schedulesService.updateWorkingScheduleTemplate(updateWorkingScheduleTemplate);
+            return await this.schedulesService.updateWorkingScheduleTemplate(updateWorkingScheduleTemplate);
         } catch (error) {
             throw new BadRequestException(error.message);
         }
-        return { message: 'Working schedule template updated successfully' };
     }
 
     @Delete('specific-off-days/:id')

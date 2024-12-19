@@ -127,11 +127,11 @@ export class SchedulesService {
 
     // Update
     async updateSpecificOffDays(data: UpdateSpecificOffDaysDTO): Promise<any> {
-        return await this.specificOffDaysRepository.update(data.id, data);
+        return await this.specificOffDaysRepository.save(data);
     }
 
     async updateWorkingScheduleTemplate(data: UpdateWorkingScheduleTemplateDTO): Promise<any> {
-        return await this.workingScheduleTemplateRepository.update(data.id, data);
+        return await this.workingScheduleTemplateRepository.save(data);
     }
 
     // Delete

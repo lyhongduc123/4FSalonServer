@@ -91,6 +91,7 @@ export class AppointmentsController {
     ): Promise<any> {
         try {
             updateAppointmentDTO.id = id;
+            console.log(req.user.id, updateAppointmentDTO);
             if (req.user.role === 'customer') {
                 return await this.appointmentsService.updateSelf(req.user.id, updateAppointmentDTO);
             } else {

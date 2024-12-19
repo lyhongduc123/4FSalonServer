@@ -127,6 +127,7 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
 
     async updateSelf(user_id: number, appointment: UpdateAppointmentDTO): Promise<Appointment> {
         if (!appointment.id) throw new BadRequestException('Id not provided');
+        delete appointment.status;
 
         let oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id: appointment.id });
         if (!oldAppointment) throw new NotFoundException('Appointment not found');
