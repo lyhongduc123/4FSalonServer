@@ -50,18 +50,18 @@ export class CustomersService implements IEntity<Customer, CreateCustomerDTO, Up
     }
 
     async incrementBookingCount(user_id: number): Promise<void> {
-        const customer = await this.customersRepository.findOneBy({ user_id });
+        const customer = await this.customersRepository.findOneBy({ user_id: user_id });
         this.customersRepository.update(customer.id, { booking_count: customer.booking_count + 1 });
     }
 
     async incrementPoints(user_id: number, points: number): Promise<void> {
-        const customer = await this.customersRepository.findOneBy({ user_id });
+        const customer = await this.customersRepository.findOneBy({ user_id: user_id });
         customer.points += points;
         this.customersRepository.update(customer.id, { points: customer.points });
     }
 
     async decrementPoints(user_id: number, points: number): Promise<void> {
-        const customer = await this.customersRepository.findOneBy({ user_id });
+        const customer = await this.customersRepository.findOneBy({ user_id: user_id });
         customer.points -= points;
         this.customersRepository.update(customer.id, { points: customer.points });
     }
