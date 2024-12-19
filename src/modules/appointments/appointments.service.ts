@@ -119,24 +119,25 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
         oldAppointment = { ...oldAppointment, ...appointment };
 
         const res = await this.appointmentsRepository.save(oldAppointment);
+
         if (appointment.status === 'cancelled') {
-            await this.customersService.incrementCancelCount(oldAppointment.user_id);
+            await this.customersService.incrementCancelCount(res.user_id);
         }
         return res;
     }
 
     async updateSelf(user_id: number, appointment: UpdateAppointmentDTO): Promise<Appointment> {
         if (!appointment.id) throw new BadRequestException('Id not provided');
-        delete appointment.status;
 
-        let oldAppointment: Appointment = await this.appointmentsRepository.findOneBy({ id: appointment.id });
+        let oldAppointment = await this.appointmentsRepository.findOneBy({ id: appointment.id });
         if (!oldAppointment) throw new NotFoundException('Appointment not found');
         if (oldAppointment.user_id !== user_id) throw new ForbiddenException('Forbidden request');
 
-        oldAppointment = { ...oldAppointment, ...appointment};
+        oldAppointment = { ...oldAppointment, ...appointment };
+
         const updatedAppointment = await this.appointmentsRepository.save(oldAppointment);
         if (appointment.status === 'cancelled') {
-            await this.customersService.incrementCancelCount(oldAppointment.user_id);
+            await this.customersService.incrementCancelCount(updatedAppointment.user_id);
         }
 
         return updatedAppointment;
