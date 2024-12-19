@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { SpecificOffDays, WorkingScheduleTemplate } from './entity';
 import { SpecificOffDaysDTO, UpdateSpecificOffDaysDTO, UpdateWorkingScheduleTemplateDTO, WorkingScheduleTemplateDTO } from './dto';
@@ -91,8 +91,13 @@ export class SchedulesController {
         @Body() updateSpecificOffDays: UpdateSpecificOffDaysDTO,
         @Param('id', new ParseIntPipe()) id: number,
     ) {
-        updateSpecificOffDays.id = id;
-        return await this.schedulesService.updateSpecificOffDays(updateSpecificOffDays);
+        try {
+            updateSpecificOffDays.id = id;
+            await this.schedulesService.updateSpecificOffDays(updateSpecificOffDays);
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+        return { message: 'Specific off days updated successfully' };
     }
 
     @Put()
@@ -101,7 +106,12 @@ export class SchedulesController {
         description: 'Update working schedule template in the database'
     })
     async updateWorkingScheduleTemplate(@Body() updateWorkingScheduleTemplate: UpdateWorkingScheduleTemplateDTO) {
-        return await this.schedulesService.updateWorkingScheduleTemplate(updateWorkingScheduleTemplate);
+        try {
+            await this.schedulesService.updateWorkingScheduleTemplate(updateWorkingScheduleTemplate);
+        } catch (error) {
+            throw new BadRequestException(error.message);
+        }
+        return { message: 'Working schedule template updated successfully' };
     }
 
     @Delete('specific-off-days/:id')
