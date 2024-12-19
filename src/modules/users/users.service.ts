@@ -17,6 +17,18 @@ export class UsersService implements IEntity<User, CreateUserDTO, CreateUserDTO>
         return this.usersRepository.find();
     }
 
+    async find(where: any): Promise<User[]> {
+        let relation = false;
+        if (where.relation) {
+            relation = true;
+            delete where.relation;
+        }
+        return this.usersRepository.find({
+            where: where,
+            relations: relation ? ['customer'] : []
+        });
+    }
+
     async findOne(id: number): Promise<User>;
     async findOne(email: string): Promise<User>;
     async findOne(google_id: string): Promise<User>;

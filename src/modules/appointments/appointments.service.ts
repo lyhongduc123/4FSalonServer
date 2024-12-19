@@ -87,7 +87,6 @@ export class AppointmentsService implements IEntity<Appointment, CreateAppointme
         .where(`appointment.date BETWEEN '${ modifiedDate } 00:00:00' AND '${ modifiedDate } 23:59:59'`)
         .andWhere('appointment.employee_id = :employee_id', { employee_id })
         .andWhere('appointment.status = :status', { status: 'confirmed' })
-        .andWhere('appointment.deleted_at IS NULL')
         .getMany();
     }
 

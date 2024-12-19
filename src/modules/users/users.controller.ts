@@ -46,6 +46,15 @@ export class UsersController {
         return await this.usersService.findAll();
     }
 
+    @Get('search')
+    @ApiOperation({ 
+        summary: 'Get list of users by search', 
+        description: 'Get a list of users by search from the database'
+    })
+    async find(@Query() where: any): Promise<any[]> {
+        return await this.usersService.find(where);
+    }
+
     @Roles('admin', 'manager', 'customer')
     @Get('profile')
     @ApiOperation({ 
