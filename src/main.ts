@@ -55,7 +55,7 @@ async function bootstrap() {
   app.setBaseViewsDir(join(__dirname, '..', 'client/dist'));
 
   app.use((req, res, next) => {
-    if (!req.path.startsWith('/api')) {
+    if (!req.path.startsWith('/api') && !req.path.startsWith('/auth') && !req.path.startsWith('/mail')) {
       res.sendFile(join(__dirname, '..', 'client/dist/index.html'));
     } else {
       next();
