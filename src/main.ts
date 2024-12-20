@@ -53,6 +53,15 @@ async function bootstrap() {
 
   app.useStaticAssets(join(__dirname, '..', 'client/dist'));
   app.setBaseViewsDir(join(__dirname, '..', 'client/dist'));
+
+  app.use((req, res, next) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(join(__dirname, '..', 'client/dist/index.html'));
+    } else {
+      next();
+    }
+  });
+
   app.setViewEngine('hbs');
   
   await app.listen(process.env.PORT ?? 3000, () => {
