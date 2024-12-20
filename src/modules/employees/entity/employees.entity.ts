@@ -3,7 +3,7 @@ import { Branch } from "../../branches/entity";
 import { Appointment } from "../../appointments/entity";
 import { SpecificOffDays, WorkingScheduleTemplate } from "../../schedules/entity";
 
-@Entity('employees')
+@Entity('employees', { engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Employee {
     @PrimaryGeneratedColumn()
     id: number;
