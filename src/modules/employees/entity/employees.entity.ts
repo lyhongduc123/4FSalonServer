@@ -45,7 +45,7 @@ export class Employee {
     @Column({
         nullable: true
     })
-    small_avatar_url: string;
+    picture_url: string;
 
     @Column()
     branch_id: number;
