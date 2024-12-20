@@ -18,7 +18,7 @@ import {
 } from "typeorm";
 
 
-@Entity('vouchers')
+@Entity('vouchers', { engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Voucher {
 
     @PrimaryGeneratedColumn()

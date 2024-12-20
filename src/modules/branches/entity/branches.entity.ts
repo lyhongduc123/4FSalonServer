@@ -16,7 +16,7 @@ import { Appointment } from "src/modules/appointments/entity";
 import { Voucher } from "src/modules/vouchers/entity";
 
 
-@Entity('branches')
+@Entity('branches', { engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Branch {
     @PrimaryGeneratedColumn()
     id: number;

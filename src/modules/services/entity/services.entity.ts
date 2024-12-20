@@ -1,7 +1,7 @@
 import { Appointment } from "src/modules/appointments/entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('services')
+@Entity('services', { engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Service {
     @PrimaryGeneratedColumn()
     id: number;

@@ -2,7 +2,7 @@ import { Appointment } from "./../../appointments/entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 
-@Entity('feedbacks')
+@Entity('feedbacks', { engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Feedback {
     @PrimaryGeneratedColumn()
     id: number

@@ -11,7 +11,7 @@ import { Appointment } from '../../appointments/entity';
 
 export type CustomerGender = 'Male' | 'Female' | 'Secret';
 
-@Entity('customers')
+@Entity('customers', { engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class Customer {
     @PrimaryGeneratedColumn()
     id: number;

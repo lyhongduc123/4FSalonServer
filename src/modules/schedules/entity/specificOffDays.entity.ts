@@ -2,7 +2,7 @@ import { Delete } from "@nestjs/common";
 import { Employee } from "src/modules/employees/entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('specific_off_days')
+@Entity('specific_off_days', { engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class SpecificOffDays {
     @PrimaryGeneratedColumn()
     id: number;

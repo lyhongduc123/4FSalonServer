@@ -2,7 +2,7 @@ import { Delete } from "@nestjs/common";
 import { Employee } from "src/modules/employees/entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
-@Entity('working_schedule_templates')
+@Entity('working_schedule_templates', { engine: 'InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci' })
 export class WorkingScheduleTemplate {
     @PrimaryGeneratedColumn()
     id: number;
